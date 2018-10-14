@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 
-# Run test suite
+set -e
+
 COMPOSE="docker-compose -p realworld_test -f docker-compose.yml -f docker-compose.test.yml"
+
+function cleanup {
+  $COMPOSE kill
+  $COMPOSE rm -f
+}
+trap cleanup EXIT
+
+# Run test suite
 
 $COMPOSE build api
 $COMPOSE run api bundle exec rake
@@ -9,5 +18,3 @@ $COMPOSE up -d api
 
 APIURL=http://localhost:3000 ./test/run-api-tests.sh
 
-$COMPOSE kill
-$COMPOSE rm -f
