@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Serve the API
+exec puma -p 3000 -C config/puma.rb

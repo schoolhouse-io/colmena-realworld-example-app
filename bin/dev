@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Run test suite
+COMPOSE="docker-compose -p realworld_dev -f docker-compose.yml -f docker-compose.dev.yml"
+
+$COMPOSE build api
+$COMPOSE run --service-ports api /bin/bash
+$COMPOSE kill
+$COMPOSE rm -f
