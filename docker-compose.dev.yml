@@ -1,0 +1,11 @@
+version: '3'
+services:
+  api:
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config:/app/config
+      - ./lib:/app/lib
+      - ./bin:/app/bin
+      - ./rake:/app/rake
+

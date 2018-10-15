@@ -1,0 +1,119 @@
+# Please, comment the reason a certain property is enabled, disabled, or overridden
+AllCops:
+  TargetRubyVersion: 2.3
+
+
+#
+# Enables
+#
+
+Style/CollectionMethods:
+  Enabled: true
+
+Style/Encoding:
+  Enabled: true
+
+Style/MethodCalledOnDoEndBlock:
+  Enabled: true
+
+Style/Send:
+  Enabled: true
+
+
+
+#
+# Overrides
+#
+
+
+# Limit the use of Ruby idioms overly uncommon in other languages
+Style/WordArray:
+  EnforcedStyle: brackets
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+# Ease modifying arrays and parameter lists
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+# Allow logical `or`/`and` in conditionals
+Style/AndOr:
+  EnforcedStyle: conditionals
+
+# Adapt better to our architecture and tooling
+Metrics/LineLength:
+  Max: 120
+
+# Allow longer classes
+Metrics/ClassLength:
+  Max: 300
+
+# Allow longer functional modules
+Metrics/ModuleLength:
+  Max: 300
+
+# Allow multiple value returns (like `return x, y`)
+Style/RedundantReturn:
+  AllowMultipleReturnValues: true
+
+# We prefer the literal syntax ->(){}
+Style/Lambda:
+  EnforcedStyle: literal
+
+# The way we are using blocks in the API (or tests) will not conform to this rule
+Metrics/BlockLength:
+  Exclude:
+    - 'lib/real_world/api/**/*'
+    - 'spec/**/*'
+    - 'test/**/*'
+
+
+#
+# Disables
+#
+
+# Allow us to distinguish pure blocks from side-effect ones
+Style/BlockDelimiters:
+  Enabled: false
+
+# UTF-8 is perfectly fine in comments
+Style/AsciiComments:
+  Enabled: false
+
+# Checked by CI tools
+Style/Documentation:
+  Enabled: false
+
+# Currently it does not detect when the enclosed lines are too big
+Style/GuardClause:
+  Enabled: false
+
+# Allow reduce and inject (FP) over each_with_object (ruby-only)
+Style/EachWithObject:
+  Enabled: false
+
+# Multiline block chains are ok
+Style/MultilineBlockChain:
+  Enabled: false
+
+# Does not play well with chained conditional assignments
+Metrics/AbcSize:
+  Enabled: false
+
+# We can take care of this on our own
+Metrics/ParameterLists:
+  Enabled: false
+
+# We can take care of this on our own
+Metrics/MethodLength:
+  Enabled: false
+
+# Simple methods can trigger these metrics
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
