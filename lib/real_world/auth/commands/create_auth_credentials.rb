@@ -6,10 +6,10 @@ module RealWorld
     module Commands
       class CreateAuthCredentials < Colmena::Command
         def call(email:, password:)
-          new_record = port(:credentials_repository).read_by_email(email).nil?
+          existing_credentials = port(:repository).read_by_email(email)
+          return error_response(:credentials_already_exist) if existing_credentials
 
-          credentials, events, errors = Domain.create(email, password)
-          response(credentials, events, errors)
+          Domain.create_credentials(email, password)
         end
       end
     end

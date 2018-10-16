@@ -1,6 +1,14 @@
 module Colmena
   module Cell
     module ClassMethods
+      def ports
+        @ports ||= []
+      end
+
+      def register_port(port)
+        ports << port
+      end
+
       def commands
         @commands ||= {}
       end
@@ -21,6 +29,10 @@ module Colmena
 
     def initialize(adapters={})
       @commands = inject_ports(self.class.commands)
+    end
+
+    def port(name)
+      @ports.fetch(name)
     end
 
     def command(name)

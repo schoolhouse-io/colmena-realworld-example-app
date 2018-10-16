@@ -1,8 +1,9 @@
-require 'colmena/component'
+require 'colmena/port_injection'
+require 'colmena/response'
 
 module Colmena
-  module Command
-    include Colmena::Component
-
+  class Command
+    include Colmena::PortInjection
+    include Colmena::Response
   end
 end
