@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest'
 require 'dry-validation'
 require 'colmena/domain'
@@ -13,7 +15,7 @@ module RealWorld
 
       def self.create_credentials(email, password)
         capture_errors(Validation.email(email), Validation.password(password)) do
-          encrypted_credentials = encrypt_credentials({email: email, password: password})
+          encrypted_credentials = encrypt_credentials(email: email, password: password)
 
           response(
             encrypted_credentials,
@@ -25,8 +27,6 @@ module RealWorld
       def self.match?(credentials, password)
         credentials.fetch(:password) == encrypt_password(password, credentials.fetch(:salt))
       end
-
-      private_class_method
 
       def self.encrypt_credentials(credentials)
         salt = Array.new(8) { [*'a'..'z'].sample }.join

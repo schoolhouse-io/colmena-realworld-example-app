@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'real_world/auth/domain'
 
 describe RealWorld::Auth::Domain do
@@ -13,7 +15,7 @@ describe RealWorld::Auth::Domain do
           succeed(
             data: include(email: email, password: be_a(String), salt: be_a(String)),
             events: [:auth_credentials_created],
-          )
+          ),
         )
       }
     end

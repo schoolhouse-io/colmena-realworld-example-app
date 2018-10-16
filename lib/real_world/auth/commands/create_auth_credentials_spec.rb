@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'real_world/auth/ports/spec_shared_context'
 require 'real_world/auth/commands/create_auth_credentials'
 
@@ -5,7 +7,7 @@ describe RealWorld::Auth::Commands::CreateAuthCredentials do
   include_context 'auth ports'
 
   let(:email) {  'some@email.com' }
-  let(:password) {  'some_password' }
+  let(:password) { 'some_password' }
 
   let(:command) { described_class.new(ports) }
   subject { command.call(email: email, password: password) }
@@ -16,7 +18,7 @@ describe RealWorld::Auth::Commands::CreateAuthCredentials do
         succeed(
           data: include(:email, :password, :salt),
           events: [:auth_credentials_created],
-        )
+        ),
       )
     }
 

@@ -8,4 +8,5 @@ services:
       - ./lib:/app/lib
       - ./bin:/app/bin
       - ./rake:/app/rake
+      - .rubocop.yml:/app/.rubocop.yml
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colmena/command'
 require 'real_world/auth/domain'
 

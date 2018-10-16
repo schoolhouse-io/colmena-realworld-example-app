@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'email'
 require 'colmena/domain/validation'
 
@@ -12,12 +14,12 @@ module RealWorld
           required(:password) { filled? & str? & size?(8..64) }
         }
 
-        def self.email(e)
-          field_errors(VALIDATOR, :email, e, :email_is_invalid)
+        def self.email(email)
+          field_errors(VALIDATOR, :email, email, :email_is_invalid)
         end
 
-        def self.password(p)
-          field_errors(VALIDATOR, :password, p, :password_is_invalid)
+        def self.password(password)
+          field_errors(VALIDATOR, :password, password, :password_is_invalid)
         end
       end
     end

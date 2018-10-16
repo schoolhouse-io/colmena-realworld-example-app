@@ -1,6 +1,6 @@
 # Please, comment the reason a certain property is enabled, disabled, or overridden
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
 
 
 #
@@ -34,7 +34,10 @@ Style/SymbolArray:
   EnforcedStyle: brackets
 
 # Ease modifying arrays and parameter lists
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
 
 Style/TrailingCommaInArguments:
@@ -64,11 +67,11 @@ Style/RedundantReturn:
 Style/Lambda:
   EnforcedStyle: literal
 
-# The way we are using blocks in the API (or tests) will not conform to this rule
+# The way we are using blocks in tests will not conform to this rule
 Metrics/BlockLength:
   Exclude:
-    - 'lib/real_world/api/**/*'
-    - 'spec/**/*'
+    - 'lib/**/*_spec.rb'
+    - 'lib/**/spec_*.rb'
     - 'test/**/*'
 
 

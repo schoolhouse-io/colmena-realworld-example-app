@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'an auth repository' do
   before { subject.clear }
 
   let(:credentials) do
-    {email: 'some@email.com', password: 'password_hash', salt: 'random' }
+    { email: 'some@email.com', password: 'password_hash', salt: 'random' }
   end
 
   context 'when there are no credentials stored' do

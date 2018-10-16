@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'sequel'
 
 module RealWorld
@@ -26,6 +27,7 @@ module RealWorld
 
           def clear
             raise 'Cannot .clear unless unsafe mode is on' unless @unsafe
+
             @credentials.delete
           end
 
