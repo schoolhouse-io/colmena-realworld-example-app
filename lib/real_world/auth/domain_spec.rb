@@ -9,10 +9,29 @@ describe RealWorld::Auth::Domain do
 
       it 'creates credentials for the given user' do
         expect(described_class.create_credentials(email, password)).to(
-          include(
-            data: include(password: be_a(String), salt: be_a(String)),
+          succeed(
+            data: include(email: email, password: be_a(String), salt: be_a(String)),
+            events: [:auth_credentials_created],
           )
         )
+      end
+    end
+
+    context 'when the email is invalid' do
+      it 'returns the errors' do
+        emails = [
+          nil,
+          1,
+          'a',
+          '@',
+          'a@',
+        ]
+
+        emails.each do |email|
+          expect(described_class.create_credentials(email, password)).to(
+            fail_with_errors(:email_is_invalid),
+          )
+        end
       end
     end
 
@@ -27,9 +46,8 @@ describe RealWorld::Auth::Domain do
         ]
 
         passwords.each do |password|
-          resp = described_class.create_credentials(email, password)
-          expect(resp.fetch(:errors)).not_to(
-            be_empty, "Expected credentials with wrong #{password} to return errors",
+          expect(described_class.create_credentials(email, password)).to(
+            fail_with_errors(:password_is_invalid),
           )
         end
       end

@@ -13,11 +13,11 @@ module RealWorld
         }
 
         def self.email(e)
-          field_errors(VALIDATOR, :email, e, :auth_email_is_invalid)
+          field_errors(VALIDATOR, :email, e, :email_is_invalid)
         end
 
         def self.password(p)
-          field_errors(VALIDATOR, :password, p, :auth_password_is_invalid)
+          field_errors(VALIDATOR, :password, p, :password_is_invalid)
         end
       end
     end
