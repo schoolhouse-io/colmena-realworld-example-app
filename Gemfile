@@ -11,6 +11,10 @@ gem 'rack', '~> 1.6'
 #
 gem 'dry-validation', '~> 0.12.1'
 
+#
+# Storage
+#
+gem 'sequel', '~> 5.2'
 
 #
 # Testing
@@ -20,4 +24,5 @@ group :test do
   gem 'rake', '~> 12.3'
   gem 'rspec', '~> 3.5'
   gem 'rubocop', '~> 0.44.1', require: false
+  gem 'sqlite3', '~> 1.3'
 end
