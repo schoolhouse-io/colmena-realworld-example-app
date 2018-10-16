@@ -27,7 +27,7 @@ describe RealWorld::Auth::Commands::CreateAuthCredentials do
   end
 
   context 'when the credentials already exist' do
-    before { repository.create(email: email, password: password, salt: 'random') }
+    before { repository.create(email: email, password: 'some_hash', salt: 'random') }
     it { is_expected.to fail_with_errors(:credentials_already_exist) }
   end
 end
