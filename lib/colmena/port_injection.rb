@@ -1,6 +1,6 @@
 module Colmena
-  # This mixin provides a simple interface to inject and access cell ports
-  module Component
+  # This mixin provides a simple interface to inject and access interfaces
+  module PortInjection
     def initialize(ports={})
       @ports = ports
     end

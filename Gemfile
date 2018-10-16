@@ -6,6 +6,11 @@ source 'https://rubygems.org'
 gem 'puma', '~> 3.11'
 gem 'rack', '~> 1.6'
 
+#
+# Domain
+#
+gem 'dry-validation', '~> 0.12.1'
+
 
 #
 # Testing
