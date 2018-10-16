@@ -22,6 +22,10 @@ module RealWorld
         end
       end
 
+      def self.match?(credentials, password)
+        credentials.fetch(:password) == encrypt_password(password, credentials.fetch(:salt))
+      end
+
       private_class_method
 
       def self.encrypt_credentials(credentials)
