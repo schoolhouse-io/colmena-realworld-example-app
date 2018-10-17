@@ -38,6 +38,7 @@ module Colmena
     def initialize(ports={})
       @ports = ports
       @commands = inject_ports(self.class.commands)
+      @queries = inject_ports(self.class.queries)
     end
 
     def port(name)

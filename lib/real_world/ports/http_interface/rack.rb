@@ -4,7 +4,7 @@ require 'rack'
 
 module RealWorld
   module Ports
-    module HTTPInterface
+    module HttpInterface
       class Rack
         def initialize
           @subscribers = subscribers = []
@@ -14,7 +14,7 @@ module RealWorld
             use ::Rack::TempfileReaper
 
             run ->(env) do
-              subscribers.reduce(env) { |a, e| e.call(env: a) }
+              subscribers.reduce(env) { |a, e| e.call(a) }
             end
           end
         end

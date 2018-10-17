@@ -11,14 +11,16 @@ router = RealWorld::Ports::Router::InMemory.new
 # API
 require 'real_world/api/cell'
 
-api = RealWorld::API::Cell.new(
+api = RealWorld::Api::Cell.new(
   router: router,
 )
+
+router.register_cell(api)
 
 # HTTP interface
 require 'real_world/ports/http_interface/rack'
 
-http_interface = RealWorld::Ports::HTTPInterface::Rack.new
-http_interface.subscribe(api.command(:api_handle_request))
+http_interface = RealWorld::Ports::HttpInterface::Rack.new
+http_interface.subscribe(api)
 
 run http_interface

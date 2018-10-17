@@ -3,11 +3,13 @@
 require 'colmena/command'
 
 module RealWorld
-  module API
+  module Api
     module Commands
       module Users
         class ApiRegister < Colmena::Command
-          def call; end
+          def call
+            response(true)
+          end
         end
       end
     end

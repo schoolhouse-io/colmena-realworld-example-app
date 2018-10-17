@@ -5,7 +5,7 @@ require 'json'
 
 module RealWorld
   module Ports
-    module HTTPRouter
+    module HttpRouter
       class Hanami
         def initialize(cell_router, routes_config)
           @router = ::Hanami::Router.new
