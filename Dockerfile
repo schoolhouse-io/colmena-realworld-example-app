@@ -7,8 +7,9 @@ WORKDIR /app
 # Install Linux dependencies
 ENV build_deps "gcc g++ make cmake libc-dev linux-headers"
 ENV runtime_deps "bash"
+ENV test_deps "sqlite-dev"
 
-RUN apk --no-cache add ${build_deps} ${runtime_deps}
+RUN apk --no-cache add ${build_deps} ${runtime_deps} ${test_deps}
 
 # Add Gemfiles
 COPY Gemfile* /app/
