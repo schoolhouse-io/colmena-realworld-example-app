@@ -6,6 +6,6 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Dir['rake/*.rb'].each { |filename| load filename }
 
-task :test => %w()
+task :test => %w(rspec)
 
 task :default => %w(bundle:audit rubocop test)
