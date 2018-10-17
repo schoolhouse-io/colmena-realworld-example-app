@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'rack'
+require 'colmena/error'
 
 module RealWorld
   module Http
     module Mappers
       class Retriever
+        include Colmena::Error
+
         attr_reader :retrievers
 
         def initialize(*retrievers)
@@ -32,7 +35,7 @@ module RealWorld
               end
             end
 
-            return nil, { type: :param_not_found, data: { name: name } } if required && !found
+            return nil, error(:param_not_found, name: name) if required && !found
           end
 
           return params, nil
