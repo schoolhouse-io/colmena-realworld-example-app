@@ -25,7 +25,7 @@ module Colmena
         queries[class_to_sym(query)] = query
       end
 
-      def self.class_to_sym(klass)
+      def class_to_sym(klass)
         name_without_namespace = klass.name.split('::').last
         name_without_namespace.gsub(/([^\^])([A-Z])/,'\1_\2').downcase.to_sym
       end
@@ -35,8 +35,10 @@ module Colmena
       klass.extend ClassMethods
     end
 
-    def initialize(adapters={})
+    def initialize(ports={})
+      @ports = ports
       @commands = inject_ports(self.class.commands)
+      @queries = inject_ports(self.class.queries)
     end
 
     def port(name)

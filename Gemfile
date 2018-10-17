@@ -3,8 +3,9 @@ source 'https://rubygems.org'
 #
 # API
 #
-gem 'puma', '~> 3.11'
-gem 'rack', '~> 1.6'
+gem 'puma', '~> 3.12'
+gem 'rack', '~> 2.0'
+gem 'hanami-router', '~> 1.2'
 
 #
 # Domain
