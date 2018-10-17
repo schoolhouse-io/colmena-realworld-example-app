@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'digest'
-require 'dry-validation'
 require 'colmena/domain'
 require 'real_world/auth/domain/validation'
 
@@ -13,9 +12,9 @@ module RealWorld
       events :auth_credentials_created,
              handler: ->(credentials, event) { credentials.merge(event.fetch(:data)) }
 
-      def self.create_credentials(email, password)
-        capture_errors(Validation.email(email), Validation.password(password)) do
-          encrypted_credentials = encrypt_credentials(email: email, password: password)
+      def self.create_credentials(user_id, password)
+        capture_errors(Validation.user_id(user_id), Validation.password(password)) do
+          encrypted_credentials = encrypt_credentials(user_id: user_id, password: password)
 
           response(
             encrypted_credentials,
