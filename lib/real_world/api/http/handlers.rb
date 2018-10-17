@@ -7,10 +7,7 @@ module RealWorld
     module Http
       module Handlers
         DEFAULT = ->(result, _env, status: 200) do
-          result.delete(:events)
-          result.update(payload: result.delete(:data))
-
-          Response.call(status, result)
+          Response.call(status, result.fetch(:data))
         end
 
         CREATED = ->(result, env) do

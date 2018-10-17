@@ -8,7 +8,7 @@ module RealWorld
       module Users
         class ApiRegister < Colmena::Command
           def call
-            response(true)
+            response(user: {})
           end
         end
       end
