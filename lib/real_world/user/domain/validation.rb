@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'uri'
-require 'email'
 require 'dry-validation'
 require 'colmena/domain/validation'
+require 'real_world/email'
 
 module RealWorld
   module User

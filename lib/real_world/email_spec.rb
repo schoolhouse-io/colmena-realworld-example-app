@@ -1,8 +1,8 @@
 # coding: utf-8
-require 'email'
+require 'real_world/email'
 
-describe Email do
-  describe 'Email::VALIDATION_REGEX' do
+describe RealWorld::Email do
+  describe 'RealWorld::Email::VALIDATION_REGEX' do
     # A nice list of valid email addresses. Source: http://jmduke.com/posts/email-addresses/
     [
       'foo@baz.com',
@@ -26,7 +26,7 @@ describe Email do
       'foob*ar@baz.com',
     ].each do |valid_email|
       it "recognizes #{valid_email} as valid" do
-        expect(Email::VALIDATION_REGEX.match(valid_email)).not_to be(nil)
+        expect(RealWorld::Email::VALIDATION_REGEX.match(valid_email)).not_to be(nil)
       end
     end
 
@@ -55,7 +55,7 @@ describe Email do
       '.@',
     ].each do |invalid_email|
       it "recognizes #{invalid_email} as invalid" do
-        expect(Email::VALIDATION_REGEX.match(invalid_email)).to be(nil)
+        expect(RealWorld::Email::VALIDATION_REGEX.match(invalid_email)).to be(nil)
       end
     end
   end
