@@ -16,7 +16,7 @@ describe RealWorld::User::Commands::CreateUser do
     it { is_expected.to fail_with_errors(:email_already_exists) }
   end
 
-  context 'when the  is in use' do
+  context 'when the username is in use' do
     before { repository.create(some_user.merge(email: 'different@email.org')) }
     it { is_expected.to fail_with_errors(:username_already_exists) }
   end

@@ -6,14 +6,14 @@ module Colmena
   module Response
     include Colmena::Error
 
-    def response(data, events: [], errors: [], opts: {})
+    def response(data, events: [], errors: [], extras: {})
       response_skeleton
         .merge(
           data: data,
           events: events,
           errors: errors,
         )
-        .merge(opts)
+        .merge(extras)
     end
 
     def error_response(*args)
