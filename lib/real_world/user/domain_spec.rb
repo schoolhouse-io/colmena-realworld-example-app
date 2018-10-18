@@ -35,7 +35,7 @@ describe RealWorld::User::Domain do
       end
     end
 
-    [nil, 1, '', 'x', 'long'*20].each do |invalid_username|
+    [nil, 1, '', 'x', 'long' * 20].each do |invalid_username|
       context "when the username is '#{invalid_username}'" do
         let(:username) { invalid_username }
         it { is_expected.to fail_with_errors(:username_is_invalid) }
@@ -106,7 +106,7 @@ describe RealWorld::User::Domain do
       end
     end
 
-    [nil, 1, '', 'x', 'long'*20].each do |invalid_username|
+    [nil, 1, '', 'x', 'long' * 20].each do |invalid_username|
       context "when the username is '#{invalid_username}'" do
         let(:username) { invalid_username }
         it { is_expected.to fail_with_errors(:username_is_invalid) }

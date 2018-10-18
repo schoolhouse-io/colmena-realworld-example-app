@@ -20,7 +20,7 @@ describe RealWorld::User::Commands::UpdateUser do
       email: new_email,
       username: new_username,
       bio: new_bio,
-      image: new_image
+      image: new_image,
     )
   end
 
@@ -38,7 +38,7 @@ describe RealWorld::User::Commands::UpdateUser do
             id: SecureRandom.uuid,
             email: new_email,
             username: 'unrelated',
-          )
+          ),
         )
       end
 
@@ -52,7 +52,7 @@ describe RealWorld::User::Commands::UpdateUser do
             id: SecureRandom.uuid,
             email: 'unrelated@email.org',
             username: new_username,
-          )
+          ),
         )
       end
 

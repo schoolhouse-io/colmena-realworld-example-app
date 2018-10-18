@@ -10,7 +10,7 @@ RSpec.shared_examples 'a user repository' do
 
   context 'when there are no users stored' do
     it '#create' do
-      expect {subject.create(some_user)}.not_to raise_error
+      expect { subject.create(some_user) }.not_to raise_error
     end
 
     it '#read_by_id' do
@@ -60,8 +60,8 @@ RSpec.shared_examples 'a user repository' do
     end
 
     describe '#update' do
-      let(:new_bio) { 'This is my flaming new bio'}
-      let(:new_image) { 'https://new.image.org'}
+      let(:new_bio) { 'This is my flaming new bio' }
+      let(:new_image) { 'https://new.image.org' }
 
       it 'updates all fields' do
         subject.update(
@@ -78,7 +78,7 @@ RSpec.shared_examples 'a user repository' do
             username: different_username,
             bio: new_bio,
             image: new_image,
-          )
+          ),
         )
       end
     end

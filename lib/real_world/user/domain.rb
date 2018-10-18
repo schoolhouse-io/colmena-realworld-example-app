@@ -26,7 +26,7 @@ module RealWorld
           Validation.email(email),
           Validation.username(username),
           Validation.bio(bio),
-          Validation.image(image)
+          Validation.image(image),
         ) do
           response(
             user,
@@ -47,7 +47,7 @@ module RealWorld
           Validation.email(email),
           Validation.username(username),
           Validation.bio(bio),
-          Validation.image(image)
+          Validation.image(image),
         ) do
           response(
             updated_user,

@@ -15,7 +15,7 @@ module RealWorld
           required(:email) { filled? & str? & format?(Email::VALIDATION_REGEX) }
           required(:username) { filled? & str? & size?(4..30) & format?(/^[a-z0-9_]+$/) }
           required(:bio) { empty? | str? & max_size?(200) }
-          required(:image) { empty? | str? & max_size?(200) & format?(/^#{URI::regexp(['http', 'https'])}$/) }
+          required(:image) { empty? | str? & max_size?(200) & format?(/^#{URI.regexp(['http', 'https'])}$/) }
         }
 
         def self.email(email)

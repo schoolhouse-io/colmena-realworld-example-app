@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'colmena/cell'
-require 'real_world/auth/commands/create_user'
-require 'real_world/auth/commands/update_user'
-require 'real_world/auth/queries/read_user_by_email'
+require 'real_world/user/commands/create_user'
+require 'real_world/user/commands/update_user'
+require 'real_world/user/queries/read_user_by_email'
 
 module RealWorld
   module User

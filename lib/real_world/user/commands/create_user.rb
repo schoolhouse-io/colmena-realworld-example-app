@@ -8,13 +8,9 @@ module RealWorld
     module Commands
       class CreateUser < Colmena::Command
         def call(email:, username:, bio:, image:)
-          if port(:repository).read_by_email(email)
-            return error_response(:email_already_exists)
-          end
+          return error_response(:email_already_exists) if port(:repository).read_by_email(email)
 
-          if port(:repository).read_by_username(username)
-            return error_response(:username_already_exists)
-          end
+          return error_response(:username_already_exists) if port(:repository).read_by_username(username)
 
           Domain.create(email, username, bio, image)
         end

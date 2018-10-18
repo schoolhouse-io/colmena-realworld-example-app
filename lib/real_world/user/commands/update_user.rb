@@ -11,13 +11,9 @@ module RealWorld
           user = port(:repository).read_by_id(id)
           return error_response(:user_does_not_exist) unless user
 
-          if port(:repository).read_by_email(email)
-            return error_response(:email_already_exists)
-          end
+          return error_response(:email_already_exists) if port(:repository).read_by_email(email)
 
-          if port(:repository).read_by_username(username)
-            return error_response(:username_already_exists)
-          end
+          return error_response(:username_already_exists) if port(:repository).read_by_username(username)
 
           Domain.update(user, email, username, bio, image)
         end
