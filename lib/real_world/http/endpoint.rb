@@ -51,6 +51,8 @@ module RealWorld
 
       def call(env)
         type, name = self.class.target
+        raise "#{type} is not an accepted type" unless [:query, :command].include?(type)
+
         target = type == :query ? @router.query(name) : @router.command(name)
         params = target_parameters(target)
 

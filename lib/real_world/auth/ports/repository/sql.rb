@@ -13,16 +13,16 @@ module RealWorld
             @unsafe = unsafe
           end
 
-          def read_by_email(email)
-            @credentials[email: email]
+          def read_by_user_id(user_id)
+            @credentials[user_id: user_id]
           end
 
-          def create(email:, password:, salt:)
-            @credentials.insert(email: email, password: password, salt: salt)
+          def create(user_id:, password:, salt:)
+            @credentials.insert(user_id: user_id, password: password, salt: salt)
           end
 
-          def delete(email)
-            @credentials.where(email: email).delete
+          def delete(user_id)
+            @credentials.where(user_id: user_id).delete
           end
 
           def clear
@@ -37,7 +37,7 @@ module RealWorld
             db.create_table?(:auth_credentials) do
               primary_key :id
 
-              String :email, size: 200, null: false, unique: true
+              uuid :user_id, null: false, unique: true
               String :password, size: 200, null: false
               String :salt, size: 10, null: false
             end

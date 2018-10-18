@@ -7,8 +7,8 @@ module RealWorld
   module Auth
     module Queries
       class CheckAuthCredentials < Colmena::Query
-        def call(email:, password:)
-          credentials = port(:repository).read_by_email(email)
+        def call(user_id:, password:)
+          credentials = port(:repository).read_by_user_id(user_id)
 
           if credentials && Domain.match?(credentials, password)
             response(true)
