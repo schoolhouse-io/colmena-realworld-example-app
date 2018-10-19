@@ -13,6 +13,10 @@ module RealWorld
             @unsafe = unsafe
           end
 
+          def transaction
+            @db.transaction { yield }
+          end
+
           def read_by_user_id(user_id)
             @credentials[user_id: user_id]
           end

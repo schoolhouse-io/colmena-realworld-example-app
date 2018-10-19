@@ -54,14 +54,13 @@ module RealWorld
         raise "#{type} is not an accepted type" unless [:query, :command].include?(type)
 
         target = type == :query ? @router.query(name) : @router.command(name)
-        params = target_parameters(target)
+
+        params, error = self.class.mapper.call(env)
+        return self.class.error_handler.call([error]) if error
 
         result = if params.empty?
                    target.call
                  else
-                   params, error = self.class.mapper.call(params, env)
-                   return self.class.error_handler.call([error]) if error
-
                    target.call(params)
                  end
 
@@ -70,21 +69,6 @@ module RealWorld
         else
           self.class.error_handler.call(result.fetch(:errors))
         end
-      end
-
-      private
-
-      PARAM_FORMAT = ->(param_def) do
-        type, name, = param_def
-
-        {
-          name: name.to_s,
-          required: type == :keyreq,
-        }
-      end
-
-      def target_parameters(target)
-        target.method(:call).parameters.map(&PARAM_FORMAT)
       end
     end
   end

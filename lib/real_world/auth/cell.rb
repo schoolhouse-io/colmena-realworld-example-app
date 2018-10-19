@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'colmena/cell'
+require 'colmena/transactions/materialize'
+require 'real_world/auth/materializer'
 require 'real_world/auth/commands/create_auth_credentials'
 require 'real_world/auth/queries/check_auth_credentials'
 
@@ -10,7 +12,15 @@ module RealWorld
       include Colmena::Cell
 
       register_port :repository
-      register_command Commands::CreateAuthCredentials
+      register_port :event_log
+
+      TRANSACTION = Colmena::Transactions::Materialize[
+        materializer: Materializer,
+        topic: :auth_events,
+      ]
+
+      register_command TRANSACTION[Commands::CreateAuthCredentials]
+
       register_query Queries::CheckAuthCredentials
     end
   end

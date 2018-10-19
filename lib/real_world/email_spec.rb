@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'real_world/email'
 
 describe RealWorld::Email do
