@@ -11,6 +11,7 @@ module RealWorld
       include Colmena::Cell
 
       register_port :router
+      register_port :tokens
 
       register_command Commands::Users::ApiRegister
 

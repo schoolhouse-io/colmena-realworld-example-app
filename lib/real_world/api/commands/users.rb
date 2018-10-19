@@ -24,7 +24,9 @@ module RealWorld
               )
 
               capture_errors(create_credentials) do
-                response(user: user)
+                response(user: user.merge(
+                  token: port(:tokens).auth(user.fetch(:email), user.fetch(:id)),
+                ))
               end
             end
           end

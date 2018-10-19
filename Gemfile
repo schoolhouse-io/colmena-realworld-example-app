@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 gem 'puma', '~> 3.12'
 gem 'rack', '~> 2.0'
 gem 'hanami-router', '~> 1.2'
+gem 'jwt', '~> 2.1'
 
 #
 # Domain
