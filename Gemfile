@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gem 'puma', '~> 3.12'
 gem 'rack', '~> 2.0'
 gem 'hanami-router', '~> 1.2'
-gem 'jwt', '~> 2.1'
+gem 'jwt', '~> 1.5'
 
 #
 # Domain
@@ -27,4 +27,5 @@ group :test do
   gem 'rspec', '~> 3.5'
   gem 'rubocop', '~> 0.59.2', require: false
   gem 'sqlite3', '~> 1.3'
+  gem 'timecop', '~> 0.9'
 end

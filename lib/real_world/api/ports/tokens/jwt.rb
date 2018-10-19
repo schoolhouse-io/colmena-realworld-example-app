@@ -17,13 +17,12 @@ module RealWorld
               secret: ENV.fetch('API_AUTH_TOKEN_SECRET'),
               lifespan: {
                 default: 60 * 60 * 3, # 3 hours
-                long: 60 * 60 * 24 * 14, # 2 weeks
               },
             },
           }.freeze
 
-          def auth(email, user_id, remember_me: false)
-            encode(:auth, email, data: { user_id: user_id }, lifespan: remember_me ? :long : :default)
+          def auth(email, user_id)
+            encode(:auth, email, data: { user_id: user_id }, lifespan: :default)
           end
 
           def decode_auth(token)
@@ -54,14 +53,6 @@ module RealWorld
             return nil, :expired_token
           rescue ::JWT::DecodeError
             return nil, :invalid_token
-          end
-
-          def as_utf8(str)
-            Base64.encode64(str).encode('utf-8')
-          end
-
-          def from_utf8(str)
-            Base64.decode64(str.encode('ascii-8bit'))
           end
 
           def symbolize_keys(hash)

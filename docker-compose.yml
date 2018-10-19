@@ -2,6 +2,4 @@ version: '3'
 services:
   api:
     build: .
-    environment:
-      - API_AUTH_TOKEN_SECRET=dont_tell_anyone
     links: []
