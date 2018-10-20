@@ -11,8 +11,10 @@ module RealWorld
       include Colmena::Cell
 
       register_port :router
+      register_port :tokens
 
       register_command Commands::Users::ApiRegister
+      register_command Commands::Users::ApiLogin
 
       def call(env)
         @http_router ||= RealWorld::Ports::HttpRouter::Hanami.new(

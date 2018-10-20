@@ -39,11 +39,13 @@ user = RealWorld::User::Cell.new(
 
 router.register_cell(user)
 
-# API
+# Api
 require 'real_world/api/cell'
+require 'real_world/api/ports/tokens/jwt'
 
 api = RealWorld::Api::Cell.new(
   router: router,
+  tokens: RealWorld::Api::Ports::Tokens::JWT.new,
 )
 
 router.register_cell(api)

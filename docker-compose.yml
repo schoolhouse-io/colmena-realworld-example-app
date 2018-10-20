@@ -3,4 +3,3 @@ services:
   api:
     build: .
     links: []
-

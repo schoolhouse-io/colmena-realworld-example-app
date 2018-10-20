@@ -7,6 +7,7 @@ module RealWorld
     module Http
       ROUTES = ->(*) do
         post '/users', to: Endpoints::Users::Register
+        post '/users/login', to: Endpoints::Users::Login
       end
     end
   end

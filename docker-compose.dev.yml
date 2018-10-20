@@ -1,6 +1,8 @@
 version: '3'
 services:
   api:
+    environment:
+      - API_AUTH_TOKEN_SECRET=dont_tell_anyone
     ports:
       - "3000:3000"
     volumes:

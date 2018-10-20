@@ -18,6 +18,16 @@ module RealWorld
               username: Mappers::Json.at(:user, :username),
             )
           end
+
+          class Login
+            include Endpoint
+            command :api_login
+
+            custom_mapper Mappers.combine(
+              email: Mappers::Json.at(:user, :email),
+              password: Mappers::Json.at(:user, :password),
+            )
+          end
         end
       end
     end
