@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RealWorld
   module Email
     # Source: http://emailregex.com/

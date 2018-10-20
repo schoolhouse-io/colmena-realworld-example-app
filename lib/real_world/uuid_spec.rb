@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'securerandom'
 require 'real_world/uuid'
 
@@ -11,8 +12,8 @@ describe RealWorld::UUID do
     [
       '',
       'abcd',
-      'a'*36,
-    ].each do |invalid_uuid| 
+      'a' * 36,
+    ].each do |invalid_uuid|
       it "does not match #{invalid_uuid}" do
         expect(RealWorld::UUID::VALIDATION_REGEX.match(invalid_uuid)).to be(nil)
       end

@@ -13,7 +13,7 @@ module RealWorld
             offset: offset,
           )
 
-          response(followed, extras: {pagination: pagination_info})
+          response(followed, extras: { pagination: pagination_info })
         end
       end
     end
