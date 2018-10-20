@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
+require 'colmena/response'
+require 'colmena/error'
 require 'colmena/transactions'
 require 'colmena/materializer'
 
 module Colmena
   module Transactions
     class Materialize
+      include Colmena::Response
+      include Colmena::Error
+
       class Configuration
         def initialize(options = {})
           @materializer = options.fetch(:materializer)
@@ -51,11 +56,7 @@ module Colmena
 
         result
       rescue Colmena::Materializer::KnownError => e
-        {
-          data: nil,
-          events: materialized_events,
-          errors: [{ type: e.type, data: e.data }],
-        }
+        response(nil, events: materialized_events, errors: error(e.type, e.data))
       end
     end
   end
