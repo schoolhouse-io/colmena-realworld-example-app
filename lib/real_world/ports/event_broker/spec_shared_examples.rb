@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'an event broker' do
-  before { subject.clear(topic) }
+  before { subject.clear(stream) }
 
-  let(:topic) { :test_topic }
+  let(:stream) { :test_stream }
 
   let(:event) do
     {
@@ -20,17 +20,17 @@ RSpec.shared_examples 'an event broker' do
     event.merge(_meta: { number: number })
   end
 
-  context 'when a particular topic does not exist' do
-    it '#topic?' do
-      expect(subject.topic?(topic)).to be(false)
+  context 'when a particular stream does not exist' do
+    it '#stream?' do
+      expect(subject.stream?(stream)).to be(false)
     end
 
-    context 'when #publish to such topic' do
-      let(:published_events) { subject.publish(topic, [event_with_number(1)]) }
+    context 'when #publish to such stream' do
+      let(:published_events) { subject.publish(stream, [event_with_number(1)]) }
       before { published_events }
 
-      it 'creates the topic' do
-        expect(subject.topic?(topic)).to be(true)
+      it 'creates the stream' do
+        expect(subject.stream?(stream)).to be(true)
       end
 
       it 'returns the published events' do
@@ -42,27 +42,27 @@ RSpec.shared_examples 'an event broker' do
     end
 
     it '#subscribe successfully' do
-      outcome = subject.subscribe(->(_) {}, topic: topic)
+      outcome = subject.subscribe(->(_) {}, stream: stream)
       expect(outcome).to be(true)
     end
   end
 
-  context 'when there are several events in a topic' do
+  context 'when there are several events in a stream' do
     let(:published_events) do
       subject.publish(
-        topic,
+        stream,
         Array.new(3, event),
       )
     end
 
     before { published_events }
 
-    it '#topic?' do
-      expect(subject.topic?(topic)).to be(true)
+    it '#stream?' do
+      expect(subject.stream?(stream)).to be(true)
     end
 
     it '#subscribe sucessfully' do
-      outcome = subject.subscribe(->(_) {}, topic: topic)
+      outcome = subject.subscribe(->(_) {}, stream: stream)
       expect(outcome).to be(true)
     end
   end
@@ -70,77 +70,28 @@ RSpec.shared_examples 'an event broker' do
   context 'when new events are being published in real time' do
     it '#subscribe only to new events' do
       # Publish first event (synchronously) and subscribe afterwards
-      subject.publish(topic, [event_with_number(1)])
+      subject.publish(stream, [event_with_number(1)])
       numbers_received = []
-      subject.subscribe(->(ev) { numbers_received << ev[:_meta][:number] }, topic: topic)
+      subject.subscribe(->(ev) { numbers_received << ev[:_meta][:number] }, stream: stream)
 
       # Publish second event and make sure we receive that one and only that one
-      second_number = subject.publish(topic, [event_with_number(2)]).first[:_meta][:number]
+      second_number = subject.publish(stream, [event_with_number(2)]).first[:_meta][:number]
 
-      3.times do  # Wait for 3 seconds, if needed
+      3.times do # Wait for 3 seconds, if needed
         sleep(1) unless numbers_received.size == 1
       end
       expect(numbers_received).to eq([second_number])
     end
 
-    it '#subscribe only to events that match certain attributes' do
-      events_received = []
-      subject.subscribe(
-        ->(ev) { events_received << ev },
-        topic: topic,
-        attributes: { attribute: 'match me' },
-      )
-
-      fetch_attributes = ->(ev) { { attribute: ev.fetch(:data).fetch(:attribute) } }
-      subject.publish(
-        topic,
-        [event],
-        attribute: 'do not match',
-      )
-
-      subject.publish(
-        topic,
-        [event.merge(data: { attribute: 'match me' })],
-        fetch_attributes,
-      )
-
-      3.times do  # Wait for 3 seconds, if needed
-        sleep(1) unless events_received.size == 1
-      end
-
-      expect(events_received.size).to eq(1)
-      expect(events_received.first.fetch(:data).fetch(:attribute)).to eq('match me')
-    end
-
-    it '#subscribe to certain types' do
-      events_received = []
-      subject.subscribe(
-        ->(ev) { events_received << ev },
-        topic: topic,
-        attributes: { type: 'AAA' },
-      )
-
-      subject.publish(topic, [event.merge(type: :AAA)])
-      subject.publish(topic, [event.merge(type: :AAA)], other: 'attribute')
-      subject.publish(topic, [event.merge(type: :BBB)])
-
-      3.times do  # Wait for 3 seconds, if needed
-        sleep(1) unless events_received.size == 2
-      end
-
-      expect(events_received.size).to eq(2)
-      expect(events_received).to all(include(type: :AAA))
-    end
-
     it '#transaction does not publish events upon a failure' do
       received_events = []
-      subject.subscribe(->(e) { received_events << e }, topic: topic)
+      subject.subscribe(->(e) { received_events << e }, stream: stream)
 
       error = Class.new(StandardError)
 
       expect {
-        subject.transaction do |channel|
-          subject.publish(topic, [event], {}, channel)
+        subject.transaction do
+          subject.publish(stream, [event])
           raise(error)
         end
       }.to raise_error(error)
