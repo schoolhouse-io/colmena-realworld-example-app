@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'colmena/materializer'
-require 'real_world/auth/domain'
+require 'real_world/user/domain'
 
 module RealWorld
   module User

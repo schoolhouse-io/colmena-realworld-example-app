@@ -39,6 +39,17 @@ user = RealWorld::User::Cell.new(
 
 router.register_cell(user)
 
+# Follow
+require 'real_world/follow/cell'
+require 'real_world/follow/ports/repository/sql'
+
+follow = RealWorld::Follow::Cell.new(
+  repository: RealWorld::Follow::Ports::Repository::SQL.new(sql_connection),
+  event_publisher: event_broker,
+)
+
+router.register_cell(follow)
+
 # Api
 require 'real_world/api/cell'
 require 'real_world/api/ports/tokens/jwt'

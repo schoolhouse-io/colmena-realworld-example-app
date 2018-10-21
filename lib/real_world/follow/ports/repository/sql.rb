@@ -13,6 +13,10 @@ module RealWorld
             @unsafe = unsafe
           end
 
+          def transaction
+            @db.transaction { yield }
+          end
+
           def read(follower_id:, followed_id:)
             @follows[follower_id: follower_id, followed_id: followed_id]
           end

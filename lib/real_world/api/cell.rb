@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'colmena/cell'
-require 'real_world/api/commands/users'
-require 'real_world/api/queries/users'
 require 'real_world/api/http/routes'
 require 'real_world/ports/http_router/hanami'
 
@@ -14,11 +12,28 @@ module RealWorld
       register_port :router
       register_port :tokens
 
-      register_query Queries::Users::ApiGetCurrentUser
+      # USERS
+      require 'real_world/api/queries/api_get_current_user'
+      register_query Queries::ApiGetCurrentUser
 
-      register_command Commands::Users::ApiRegister
-      register_command Commands::Users::ApiLogin
-      register_command Commands::Users::ApiUpdateCurrentUser
+      require 'real_world/api/commands/api_register'
+      register_command Commands::ApiRegister
+
+      require 'real_world/api/commands/api_login'
+      register_command Commands::ApiLogin
+
+      require 'real_world/api/commands/api_update_current_user'
+      register_command Commands::ApiUpdateCurrentUser
+
+      # PROFILES
+      require 'real_world/api/queries/api_get_profile'
+      register_query Queries::ApiGetProfile
+
+      require 'real_world/api/commands/api_follow_profile'
+      register_command Commands::ApiFollowProfile
+
+      require 'real_world/api/commands/api_unfollow_profile'
+      register_command Commands::ApiUnfollowProfile
 
       def call(env)
         @http_router ||= RealWorld::Ports::HttpRouter::Hanami.new(

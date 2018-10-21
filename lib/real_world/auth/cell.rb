@@ -3,8 +3,6 @@
 require 'colmena/cell'
 require 'colmena/transactions/materialize'
 require 'real_world/auth/materializer'
-require 'real_world/auth/commands/create_auth_credentials'
-require 'real_world/auth/queries/check_auth_credentials'
 
 module RealWorld
   module Auth
@@ -19,9 +17,11 @@ module RealWorld
         event_stream: :auth_events,
       ]
 
-      register_command TRANSACTION[Commands::CreateAuthCredentials]
-
+      require 'real_world/auth/queries/check_auth_credentials'
       register_query Queries::CheckAuthCredentials
+
+      require 'real_world/auth/commands/create_auth_credentials'
+      register_command TRANSACTION[Commands::CreateAuthCredentials]
     end
   end
 end
