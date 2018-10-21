@@ -14,7 +14,7 @@ module RealWorld
 
           capture_errors(list_tags) do
             response(
-              tags: list_tags.fetch(:data),
+              tags: list_tags.fetch(:data).map { |tag_info| tag_info.fetch(:name) },
               extras: { pagination: list_tags.fetch(:pagination) },
             )
           end
