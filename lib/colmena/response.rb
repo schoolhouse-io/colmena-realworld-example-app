@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colmena/error'
 
 module Colmena

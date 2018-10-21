@@ -8,8 +8,6 @@ module RealWorld
     module Http
       module Mappers
         module Json
-          extend Colmena::Error
-
           def self.required(*path)
             at(*path, required: true)
           end
@@ -29,7 +27,7 @@ module RealWorld
               begin
                 [path.reduce(cache[:json]) { |a, e| a.fetch(e) }, nil]
               rescue ::KeyError => e
-                [nil, required ? error(:param_not_found, name: e.key) : nil]
+                [nil, required ? Colmena::Error.new(:param_not_found, name: e.key) : nil]
               end
             end
           end

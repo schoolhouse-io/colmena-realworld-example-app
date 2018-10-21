@@ -7,8 +7,6 @@ module RealWorld
     module Http
       module Mappers
         module Route
-          extend Colmena::Error
-
           def self.segment(name)
             ->(request, _cache) do
               params = request.env['router.params']
@@ -16,7 +14,7 @@ module RealWorld
               if params&.key?(name)
                 [params[name], nil]
               else
-                [nil, error(:param_not_found, name: name)]
+                [nil, Colmena::Error.new(:param_not_found, name: name)]
               end
             end
           end

@@ -7,8 +7,6 @@ module RealWorld
     module Http
       module Mappers
         module AuthToken
-          extend Colmena::Error
-
           def self.header
             ->(request, _cache) do
               type, token = request.env['HTTP_AUTHORIZATION'].split
@@ -16,7 +14,13 @@ module RealWorld
               if type == 'Token'
                 [token, nil]
               else
-                [nil, error(:forbidden, reason: "An Authentication header of type 'Token' was not provided")]
+                [
+                  nil,
+                  Colmena::Error.new(
+                    :forbidden,
+                    reason: "An Authentication header of type 'Token' was not provided",
+                  ),
+                ]
               end
             end
           end

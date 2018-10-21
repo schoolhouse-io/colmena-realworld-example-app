@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colmena/response'
 require 'colmena/error'
 require 'colmena/event'
@@ -20,7 +22,7 @@ module Colmena
 
     # Apply a sequence of events to an entity
     def apply(entity, events)
-      events.inject(entity) do |result, event|
+      events.reduce(entity) do |result, event|
         @event_handlers[event.fetch(:type)].call(result, event)
       end
     end
