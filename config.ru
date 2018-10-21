@@ -50,6 +50,17 @@ follow = RealWorld::Follow::Cell.new(
 
 router.register_cell(follow)
 
+# Tag
+require 'real_world/tag/cell'
+require 'real_world/tag/ports/repository/sql'
+
+tag = RealWorld::Tag::Cell.new(
+  repository: RealWorld::Tag::Ports::Repository::SQL.new(sql_connection),
+  event_subscriber: event_broker,
+)
+
+router.register_cell(tag)
+
 # Api
 require 'real_world/api/cell'
 require 'real_world/api/ports/tokens/jwt'
