@@ -20,24 +20,6 @@ module RealWorld
             return params, nil
           end
         end
-
-        module Json
-          def self.at(*path)
-            ->(request, cache) do
-              cache[:json] ||= begin
-                                 JSON.parse(request.body.read.to_s, symbolize_names: true)
-                               rescue ::JSON::ParserError
-                                 {}
-                               end
-
-              begin
-                [path.reduce(cache[:json]) { |a, e| a.fetch(e) }, nil]
-              rescue ::KeyError => e
-                [nil, error(:param_not_found, name: e.key)]
-              end
-            end
-          end
-        end
       end
     end
   end
