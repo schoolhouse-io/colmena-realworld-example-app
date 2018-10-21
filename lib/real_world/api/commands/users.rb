@@ -11,8 +11,6 @@ module RealWorld
             create_user = port(:router).command(:create_user).call(
               email: email,
               username: username,
-              bio: nil,
-              image: nil,
             )
 
             capture_errors(create_user) do
@@ -46,6 +44,26 @@ module RealWorld
             response(user: user.merge(
               token: port(:tokens).auth(user.fetch(:email), user.fetch(:id)),
             ))
+          end
+        end
+
+        class ApiUpdateCurrentUser < Colmena::Command
+          def call(auth_token:, email: nil, username: nil, bio: nil, image: nil)
+            token, error = port(:tokens).decode_auth(auth_token)
+            return error_response(:forbidden, reason: error) if error
+
+            updated_user = port(:router).command(:update_user).call(
+              id: token.fetch(:user_id),
+              email: email,
+              username: username,
+              bio: bio,
+              image: image,
+            )
+
+            capture_errors(updated_user) do
+              user = updated_user.fetch(:data)
+              response(user: user.merge(token: auth_token))
+            end
           end
         end
       end

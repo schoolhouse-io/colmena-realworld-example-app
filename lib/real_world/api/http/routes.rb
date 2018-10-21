@@ -8,6 +8,9 @@ module RealWorld
       ROUTES = ->(*) do
         post '/users', to: Endpoints::Users::Register
         post '/users/login', to: Endpoints::Users::Login
+
+        get  '/user', to: Endpoints::Users::GetCurrent
+        put  '/user', to: Endpoints::Users::UpdateCurrent
       end
     end
   end

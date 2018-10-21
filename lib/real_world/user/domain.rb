@@ -14,20 +14,20 @@ module RealWorld
              handler: ->(user, event) { user.merge(event.fetch(:data)) }
 
       def self.create(email, username, bio, image)
-        user = {
-          id: SecureRandom.uuid,
-          email: email,
-          username: username,
-          bio: bio,
-          image: image,
-        }
-
         capture_errors(
           Validation.email(email),
           Validation.username(username),
           Validation.bio(bio),
           Validation.image(image),
         ) do
+          user = {
+            id: SecureRandom.uuid,
+            email: email,
+            username: username,
+            bio: bio,
+            image: image,
+          }
+
           response(
             user,
             events: [event(:user_created, user)],
@@ -42,6 +42,7 @@ module RealWorld
           bio: bio,
           image: image,
         )
+        return response(user) if user == updated_user
 
         capture_errors(
           Validation.email(email),

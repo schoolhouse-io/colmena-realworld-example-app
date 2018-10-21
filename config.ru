@@ -23,7 +23,7 @@ require 'real_world/auth/ports/repository/sql'
 
 auth = RealWorld::Auth::Cell.new(
   repository: RealWorld::Auth::Ports::Repository::SQL.new(sql_connection),
-  event_log: event_broker,
+  event_publisher: event_broker,
 )
 
 router.register_cell(auth)
@@ -34,7 +34,7 @@ require 'real_world/user/ports/repository/sql'
 
 user = RealWorld::User::Cell.new(
   repository: RealWorld::User::Ports::Repository::SQL.new(sql_connection),
-  event_log: event_broker,
+  event_publisher: event_broker,
 )
 
 router.register_cell(user)
