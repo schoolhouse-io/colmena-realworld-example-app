@@ -12,11 +12,11 @@ module RealWorld
       include Colmena::Cell
 
       register_port :repository
-      register_port :event_log
+      register_port :event_publisher
 
       TRANSACTION = Colmena::Transactions::Materialize[
-        materializer: Materializer,
-        topic: :auth_events,
+        event_materializer: Materializer,
+        event_stream: :auth_events,
       ]
 
       register_command TRANSACTION[Commands::CreateAuthCredentials]
