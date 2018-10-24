@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'colmena/cell'
-require 'real_world/follow/commands/follow'
-require 'real_world/follow/commands/unfollow'
-require 'real_world/follow/queries/list_followed'
+require 'colmena/transactions/materialize'
+require 'real_world/follow/materializer'
 
 module RealWorld
   module Follow
@@ -11,8 +10,23 @@ module RealWorld
       include Colmena::Cell
 
       register_port :repository
-      register_command Commands::Follow
-      register_command Commands::Unfollow
+      register_port :event_publisher
+
+      TRANSACTION = Colmena::Transactions::Materialize[
+        event_materializer: Materializer,
+        event_stream: :user_events,
+      ]
+
+      require 'real_world/follow/commands/follow'
+      register_command TRANSACTION[Commands::Follow]
+
+      require 'real_world/follow/commands/unfollow'
+      register_command TRANSACTION[Commands::Unfollow]
+
+      require 'real_world/follow/queries/is_followed'
+      register_query Queries::IsFollowed
+
+      require 'real_world/follow/queries/list_followed'
       register_query Queries::ListFollowed
     end
   end

@@ -51,8 +51,8 @@ module RealWorld
 
               String :email, size: 200, null: false, unique: true
               String :username, size: 100, null: false, unique: true
-              String :bio, size: 500, null: true
-              String :image, size: 500, null: true
+              String :bio, size: 500, null: false
+              String :image, size: 500, null: false
             end
 
             db[:users]

@@ -42,14 +42,14 @@ describe RealWorld::User::Domain do
       end
     end
 
-    [1, 'too long' * 100].each do |invalid_bio|
+    [nil, 1, 'too long' * 100].each do |invalid_bio|
       context "when the bio is '#{invalid_bio}'" do
         let(:bio) { invalid_bio }
         it { is_expected.to fail_with_errors(:bio_is_invalid) }
       end
     end
 
-    [1, 'not a url'].each do |invalid_image|
+    [nil, 1, 'not a url'].each do |invalid_image|
       context "when the image is '#{invalid_image}'" do
         let(:image) { invalid_image }
         it { is_expected.to fail_with_errors(:image_is_invalid) }

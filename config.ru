@@ -23,7 +23,7 @@ require 'real_world/auth/ports/repository/sql'
 
 auth = RealWorld::Auth::Cell.new(
   repository: RealWorld::Auth::Ports::Repository::SQL.new(sql_connection),
-  event_log: event_broker,
+  event_publisher: event_broker,
 )
 
 router.register_cell(auth)
@@ -34,10 +34,21 @@ require 'real_world/user/ports/repository/sql'
 
 user = RealWorld::User::Cell.new(
   repository: RealWorld::User::Ports::Repository::SQL.new(sql_connection),
-  event_log: event_broker,
+  event_publisher: event_broker,
 )
 
 router.register_cell(user)
+
+# Follow
+require 'real_world/follow/cell'
+require 'real_world/follow/ports/repository/sql'
+
+follow = RealWorld::Follow::Cell.new(
+  repository: RealWorld::Follow::Ports::Repository::SQL.new(sql_connection),
+  event_publisher: event_broker,
+)
+
+router.register_cell(follow)
 
 # Api
 require 'real_world/api/cell'

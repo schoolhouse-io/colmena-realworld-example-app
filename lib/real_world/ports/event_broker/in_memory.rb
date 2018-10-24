@@ -4,7 +4,7 @@ module RealWorld
   module Ports
     #
     # The EventBroker port is responsible for the publication and subscription
-    # to streams of events under certain topics
+    # to streams of events under certain streams
     #
     # This interface covers basic interaction with the broker. Complex
     # scenarios should use more sophisticated producer/consumer interfaces
@@ -17,28 +17,24 @@ module RealWorld
       class InMemory
         # Creates a new in-memory event broker with a clean state
         def initialize
-          @topics = {}
+          @streams = {}
           @subscribers = {}
         end
 
-        # Publishes a series of events under a certain topic and returns
-        # the published events. If the topic did not exist beforehand,
+        # Publishes a series of events under a certain stream and returns
+        # the published events. If the stream did not exist beforehand,
         # it creates it
         #
-        # @param topic [Symbol] The name of the topic
+        # @param stream [Symbol] The name of the stream
         # @param events [Array<Event>] An array of events to publish
-        # @param attributes [#call(Event), Hash] A callback to obtain the
-        #   attributes the event should be linked with (e.g. the user_id or the
-        #   medgroup_id) so that listeners can fine-grain their subscription),
-        #   or a hash containing the attributes
-        # @return [Array<EventInTopic>] An array containing the
+        # @return [Array<EventInStream>] An array containing the
         #   published events in the same order as received
-        def publish(topic, events, attributes = {}, *)
+        def publish(stream, events)
           if @within_transaction
-            @buffer << [topic, events, attributes]
+            @buffer << [stream, events]
             events
           else
-            publish!(topic, events, attributes)
+            publish!(stream, events)
           end
         end
 
@@ -56,55 +52,48 @@ module RealWorld
           @within_transaction = false
         end
 
-        # Asks whether a given topic exists
+        # Asks whether a given stream exists
         #
-        # @param name [Symbol] The name of the topic
+        # @param name [Symbol] The name of the stream
         # @return [True, False]
-        def topic?(name)
-          @topics.key?(name.to_sym)
+        def stream?(name)
+          @streams.key?(name.to_sym)
         end
 
-        # Subscribes a block to a topic. The block will be called whenever
-        # a new event is published under such topic
+        # Subscribes a block to a stream. The block will be called whenever
+        # a new event is published under such stream
         #
-        # @param topic [Symbol] The name of the topic
+        # @param stream [Symbol] The name of the stream
         # @param callback [#call] A block to be called with the published
         #   event as the only parameter
         # @return [True]
-        def subscribe(callback, topic:, attributes: {}, **)
-          subscribers(topic) << [callback, attributes]
+        def subscribe(callback, stream:)
+          subscribers(stream) << callback
           true
         end
 
-        # Clears all the topics and subscribers from the system
+        # Clears all the streams and subscribers from the system
         #
-        # @param topic [Symbol] The name of the topic
-        def clear(topic)
-          @topics.delete(topic)
-          @subscribers.delete(topic)
+        # @param stream [Symbol] The name of the stream
+        def clear(stream)
+          @streams.delete(stream)
+          @subscribers.delete(stream)
         end
 
         private
 
-        def subscribers(topic)
-          @subscribers[topic.to_sym] ||= []
+        def subscribers(stream)
+          @subscribers[stream.to_sym] ||= []
         end
 
-        def publish!(topic, events, attributes)
-          @topics[topic.to_sym] = true # Create topic
+        def publish!(stream, events)
+          @streams[stream.to_sym] = true # Create stream
 
           events.each do |event|
-            subscribers(topic).each do |callback, expected_attrs|
-              attrs = attributes.respond_to?(:call) ? attributes.call(event) : attributes
-              attrs[:type] = event[:type].to_s
-
-              callback.call(event) if match_all?(attrs, expected_attrs)
+            subscribers(stream).each do |callback|
+              callback.call(event)
             end
           end
-        end
-
-        def match_all?(attrs, expected_attrs)
-          expected_attrs.all? { |name, value| attrs[name] == value }
         end
       end
     end

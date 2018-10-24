@@ -7,13 +7,20 @@ require 'colmena/materializer'
 
 module Colmena
   module Transactions
+    # A materialization transaction is meant to wrap/decorate a command.
+    # It makes sure 2 things happen transactionally:
+    #   1. The events that result from the command are materialized (i.e. they
+    #      have a synchronous effect on the state of the app; usually, this means
+    #      they are stored in a database)
+    #   2. The events that result from the command are published, so that
+    #      asynchronous observers can react to them
     class Materialize
       include Colmena::Response
       include Colmena::Error
 
       class Configuration
         def initialize(options = {})
-          @materializer = options.fetch(:materializer)
+          @event_materializer = options.fetch(:event_materializer)
           @options = options
           @config = Colmena::Transactions::Configuration.new(Materialize, options)
         end
@@ -27,15 +34,21 @@ module Colmena
         Configuration.new(options)
       end
 
-      def initialize(ports, materializer:, topic:, attributes: {}, events_port: :event_log)
+      # @param ports [Hash<Symbol, Port>] the ports injected to the cell at runtime.
+      #   It's supposed to wrap/decorate a command, and thus receives the same ports
+      #   as the rest of the cell
+      # @param event_materializer [Colmena::Materializer] the particular materializer
+      #   that will process those events synchronously
+      # @param event_stream [Symbol] the name of the event stream to publish to
+      # @param event_publisher [Symbol] the name of the port that will be used to publish
+      #   the events
+      def initialize(ports, event_materializer:, event_stream:, event_publisher: :event_publisher)
         # We pass all ports for flexibility, but allow choosing
         # specific ones for certain actions
         @ports = ports
-        @events_port = ports.fetch(events_port)
-
-        @materializer = materializer.new(ports)
-        @topic = topic
-        @attributes = attributes
+        @event_publisher = ports.fetch(event_publisher)
+        @event_stream = event_stream
+        @event_materializer = event_materializer.new(ports)
       end
 
       def call
@@ -44,10 +57,10 @@ module Colmena
         materialized_events = []
 
         events.each do |event|
-          @events_port.transaction do |channel|
-            @materializer.transaction do
-              @materializer.call(event)
-              @events_port.publish(@topic, [event], @attributes, channel)
+          @event_publisher.transaction do
+            @event_materializer.transaction do
+              @event_materializer.call(event)
+              @event_publisher.publish(@event_stream, [event])
             end
           end
 

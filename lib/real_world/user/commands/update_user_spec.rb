@@ -59,6 +59,21 @@ describe RealWorld::User::Commands::UpdateUser do
       it { is_expected.to fail_with_errors(:username_already_exists) }
     end
 
+    context 'when nothing really changes' do
+      before do
+        repository.update(
+          some_user.merge(
+            email: new_email,
+            username: new_username,
+            bio: new_bio,
+            image: new_image,
+          ),
+        )
+      end
+
+      it { is_expected.to succeed(data: include(email: new_email), events: []) }
+    end
+
     it {
       is_expected.to(
         succeed(

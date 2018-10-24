@@ -3,9 +3,6 @@
 require 'colmena/cell'
 require 'colmena/transactions/materialize'
 require 'real_world/user/materializer'
-require 'real_world/user/commands/create_user'
-require 'real_world/user/commands/update_user'
-require 'real_world/user/queries/read_user_by_email'
 
 module RealWorld
   module User
@@ -13,16 +10,27 @@ module RealWorld
       include Colmena::Cell
 
       register_port :repository
+      register_port :event_publisher
 
       TRANSACTION = Colmena::Transactions::Materialize[
-        materializer: Materializer,
-        topic: :user_events,
+        event_materializer: Materializer,
+        event_stream: :user_events,
       ]
 
-      register_command TRANSACTION[Commands::CreateUser]
-      register_command TRANSACTION[Commands::UpdateUser]
+      require 'real_world/user/queries/read_user_by_id'
+      register_query Queries::ReadUserById
 
+      require 'real_world/user/queries/read_user_by_email'
       register_query Queries::ReadUserByEmail
+
+      require 'real_world/user/queries/read_user_by_username'
+      register_query Queries::ReadUserByUsername
+
+      require 'real_world/user/commands/create_user'
+      register_command TRANSACTION[Commands::CreateUser]
+
+      require 'real_world/user/commands/update_user'
+      register_command TRANSACTION[Commands::UpdateUser]
     end
   end
 end

@@ -27,7 +27,7 @@ RSpec.shared_examples 'a router' do
 
       def call(id:, message:)
         port(:repository).set(id, message)
-        response(true, events: [event(:message_written))
+        response(true, events: [event(:message_written)])
       end
     end
 
@@ -48,18 +48,17 @@ RSpec.shared_examples 'a router' do
         @values = {}
       end
 
-      def set(k, v)
-        @values[k] = v
+      def set(key, value)
+        @values[key] = value
       end
 
-      def get(k)
-        @values[k]
+      def get(key)
+        @values[key]
       end
     end
 
     klass.new
   end
-
 
   context 'when there are no cells' do
     before { subject.clear }
