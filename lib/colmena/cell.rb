@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Colmena
   module Cell
     module ClassMethods
@@ -25,9 +27,21 @@ module Colmena
         queries[class_to_sym(query)] = query
       end
 
+      def listeners
+        @listeners ||= {}
+      end
+
+      def register_listener(listener, event_stream:, event_subscriber: :event_subscriber)
+        listeners[class_to_sym(listener)] = {
+          listener_class: listener,
+          event_stream: event_stream,
+          event_subscriber: event_subscriber,
+        }
+      end
+
       def class_to_sym(klass)
         name_without_namespace = klass.name.split('::').last
-        name_without_namespace.gsub(/([^\^])([A-Z])/,'\1_\2').downcase.to_sym
+        name_without_namespace.gsub(/([^\^])([A-Z])/, '\1_\2').downcase.to_sym
       end
     end
 
@@ -35,10 +49,17 @@ module Colmena
       klass.extend ClassMethods
     end
 
-    def initialize(ports={})
+    def initialize(ports = {})
       @ports = ports
       @commands = inject_ports(self.class.commands)
       @queries = inject_ports(self.class.queries)
+
+      self.class.listeners.each do |_name, opts|
+        port(opts.fetch(:event_subscriber)).subscribe(
+          opts.fetch(:listener_class).new(@ports),
+          stream: opts.fetch(:event_stream),
+        )
+      end
     end
 
     def port(name)

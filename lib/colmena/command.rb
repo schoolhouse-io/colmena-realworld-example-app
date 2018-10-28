@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colmena/port_injection'
 require 'colmena/callable'
 require 'colmena/response'

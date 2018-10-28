@@ -19,15 +19,13 @@ RSpec.shared_examples 'a router' do
     end
 
     command = Class.new(Colmena::Command) do
-      include Colmena::Event
-
       def self.name
         'WriteMessage'
       end
 
       def call(id:, message:)
         port(:repository).set(id, message)
-        response(true, events: [event(:message_written)])
+        response(true, events: [Colmena::Event.call(:message_written)])
       end
     end
 

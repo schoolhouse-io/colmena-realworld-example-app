@@ -5,7 +5,7 @@ require 'colmena/query'
 module RealWorld
   module Api
     module Queries
-      class ApiGetCurrentUser < Colmena::Command
+      class ApiGetCurrentUser < Colmena::Query
         def call(auth_token:)
           token, error = port(:tokens).decode_auth(auth_token)
           return error_response(:forbidden, reason: error) if error

@@ -29,10 +29,10 @@ module RealWorld
             @follows.where(follower_id: follower_id, followed_id: followed_id).delete
           end
 
-          def list_followed(by:, limit: 100, offset: 0)
+          def list_followed(by:, limit: nil, offset: nil)
             query = @follows.where(follower_id: by)
 
-            Sequel.with_pagination_info(query, limit, offset)
+            Sequel.with_pagination_info(query, limit || 100, offset || 0)
           end
 
           def clear

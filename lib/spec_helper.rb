@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :contain_events do |*expected|
   match do |actual|
     expect(actual.size).to eq(expected.size)
@@ -7,7 +9,7 @@ end
 
 RSpec::Matchers.alias_matcher :contain_errors, :contain_events
 
-RSpec::Matchers.define :succeed do |data:, events: [], pagination: nil|
+RSpec::Matchers.define :succeed do |data:, events: []|
   match do |actual|
     expect(actual[:events] || []).to contain_events(*events)
     expect(actual.fetch(:data)).to data

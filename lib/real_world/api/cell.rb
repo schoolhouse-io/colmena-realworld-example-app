@@ -35,6 +35,10 @@ module RealWorld
       require 'real_world/api/commands/api_unfollow_profile'
       register_command Commands::ApiUnfollowProfile
 
+      # TAGS
+      require 'real_world/api/queries/api_list_tags'
+      register_query Queries::ApiListTags
+
       def call(env)
         @http_router ||= RealWorld::Ports::HttpRouter::Hanami.new(
           port(:router),
