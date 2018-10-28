@@ -2,7 +2,7 @@
 
 module Colmena
   module Error
-    def self.new(name, data = {})
+    def self.call(name, data = {})
       {
         type: name,
         data: data,
@@ -10,7 +10,7 @@ module Colmena
     end
 
     def error(*args, **kwargs)
-      Error.new(*args, **kwargs)
+      Error.call(*args, **kwargs)
     end
   end
 end

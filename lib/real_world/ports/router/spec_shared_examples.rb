@@ -25,7 +25,7 @@ RSpec.shared_examples 'a router' do
 
       def call(id:, message:)
         port(:repository).set(id, message)
-        response(true, events: [Colmena::Event.new(:message_written)])
+        response(true, events: [Colmena::Event.call(:message_written)])
       end
     end
 

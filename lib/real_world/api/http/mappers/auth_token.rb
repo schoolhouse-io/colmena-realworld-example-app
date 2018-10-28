@@ -16,7 +16,7 @@ module RealWorld
               else
                 [
                   nil,
-                  Colmena::Error.new(
+                  Colmena::Error.call(
                     :forbidden,
                     reason: "An Authentication header of type 'Token' was not provided",
                   ),

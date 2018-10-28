@@ -7,10 +7,6 @@ module RealWorld
     module Http
       module Mappers
         module QueryParam
-          def self.required(name, type: String)
-            param(name, required: true, type: type)
-          end
-
           def self.optional(name, type: String)
             param(name, required: false, type: type)
           end
@@ -21,7 +17,7 @@ module RealWorld
 
               if value.nil?
                 if required
-                  [nil, Colmena::Error.new(:param_not_found, name: name)]
+                  [nil, Colmena::Error.call(:param_not_found, name: name)]
                 else
                   [nil, nil]
                 end
@@ -31,7 +27,7 @@ module RealWorld
                 if coerced_value
                   [coerced_value, nil]
                 else
-                  [nil, Colmena::Error.new(:invalid_param, name: name, reason: "Expected a value of type #{type}")]
+                  [nil, Colmena::Error.call(:invalid_param, name: name, reason: "Expected a value of type #{type}")]
                 end
               end
             end
