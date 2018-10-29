@@ -1,8 +1,21 @@
-# ![RealWorld Colmena Example App using pure Ruby](logo.png)
+# ![RealWorld Colmena Example App using pure Ruby](/media/logo.png)
 
 > ### This codebase contains real world examples (of event-driven architectures, CQRS, hexagonal architectures, etc.) that adhere to the [RealWorld](https://github.com/gothinkster/realworld) API spec.
 
 ### [Referential demo](https://react-redux.realworld.io/)
+
+
+## How can I run this service?
+
+This repository is packaged with [Docker](https://www.docker.com/). You will also need to have [Docker Compose](https://docs.docker.com/compose/) installed.
+
+For convenience, we provide the following scripts:
+
+* `bin/start` starts the service on port 3000.
+* `bin/dev` opens a console with a fully working development environment.
+* `bin/test` runs all unit tests + the official [RealWorld API Spec](https://github.com/gothinkster/realworld/tree/master/api) test collection.
+
+If you don't want to use docker, you can take a look at the [Dockerfile](/Dockerfile) and [docker-compose.yml](/docker-compose.yml) to find out what runtime dependencies are required.
 
 
 ## What is Colmena?
@@ -32,7 +45,7 @@ We start with a cell. __A cell is a self-contained service__ that follows the [h
 1. Relies on a series of interfaces to receive input from (and send output to) external services and technologies.
 1. Exposes a public API (a contract stating what it can do).
 
-![basic hexagonal cell diagram]()
+![basic hexagonal cell diagram](/media/basic_cell.png)
 
 You can think of cells as __very small microservices__. In fact, we encourage you to try to make your cells as small as possible. In our experience, granulating your domain around entities and relationships helps understand, test and maintain the codebase in the long run. These are the cells of the RealWorld backend:
 
@@ -45,7 +58,7 @@ You can think of cells as __very small microservices__. In fact, we encourage yo
 * __favorite__ article
 * (article) __feed__
 
-In the context of our blog-like app, the purpose of each cell is pretty clear. It would only take a glance at the [`lib/real_world` directory](https://github.com/schoolhouse-io/colmena-realworld-example-app/tree/master/lib/real_world) to find out where a certain feature might be defined. From there, a developer can quickly look at the API to learn about the operations it supports and navigate the implementation in a very gradual and natural way.
+We know our app is a blogging platform. In that context, the purpose of each cell is pretty clear. It would only take a glance at the [`lib/real_world` directory](https://github.com/schoolhouse-io/colmena-realworld-example-app/tree/master/lib/real_world) to find out where a certain feature might be defined. From there, a developer can quickly look at the API to learn about the operations it supports and navigate the implementation in a very gradual and natural way.
 
 
 ### An event-based, functional domain
@@ -67,7 +80,7 @@ Moreover, since we have a sequence of immutable data, __everything the domain do
 
 > We can [validate and describe our app's behavior](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/follow/domain.rb) in a way that is both simple and very powerful, forgetting about the noise.
 
-![event-based domain, hexagonal cell diagram]()
+![event-based domain visual explanation](/media/evented_domain.png)
 
 ### A public contract
 
@@ -84,7 +97,7 @@ You'll notice the first two use cases are actions that _may_ (if validation rule
 
 In _Colmena_, we call the former _commands_ and the latter _queries_, and we deal with them in a slightly different way. This pattern is called [CQRS (command-query responsibility segregation)](https://martinfowler.com/bliki/CQRS.html). The linked article does a very good job at explaining the pros and cons of this approach, so we'll focus on our particular implementation for this RealWorld codebase:
 
-![flow diagram explaining what a command does and what a query does]()
+![flow diagram explaining what a command does and what a query does](/media/cqrs_sequence_diagram.png)
 
 It is extremely valuable for a project to __make sure the contracts for all these public-facing components are properly documented and semantically versioned__. Developers need to be able to learn and trust, at any point:
 
@@ -96,9 +109,9 @@ It is extremely valuable for a project to __make sure the contracts for all thes
 
 Given that this is a distributed architecture with many components and cells working separately, it's fair to wonder... Are changes atomic? How do we keep them consistent?
 
-When commands need to be atomic (they usually do), they are decorated by a transaction. This transaction is responsible for publishing the sequence of events the command generates.
+When commands need to be atomic (they usually do), they are decorated by a transaction. This transaction is responsible for publishing the sequence of events the command generates and running the proper materializers.
 
-Consistency, on the other hand, is enforced by a component we call _the Materializer_. A materializer takes a sequence of events and propagates their changes to the several "read models" the queries use. For instance, a materializer may get the following sequence of events:
+These materializers enforce consistency and integrity. . A materializer takes a sequence of events and propagates their changes to the several "read models" the queries use. For instance, a materializer may get the following sequence of events:
 
 ```
 article_published(...)
@@ -110,6 +123,8 @@ And perform the following operations:
 * Store the whole article in a document-oriented database (e.g. MongoDB) to optimize read operations.
 * Store the the article in a reverse index of `tag -> articles` to fetch articles with certain tags.
 * Store the article's title and description in a database optimized for search (e.g. ElasticSearch).
+
+![materialization diagram](/media/materialization_diagram.png)
 
 This materialization process can happen synchronously (if consistency is a requirement), or asynchronously (when [eventual consistency](http://guide.couchdb.org/draft/consistency.html) is enough).
 
@@ -135,8 +150,6 @@ Relying on interfaces is one of the most basic design principles, and it has imm
 
 > Just remember to fully test all adapters before releasing to production.
 
-![hexagonal cell diagram with ports and adapters]()
-
 
 ### Your application is made up of multiple cells
 
@@ -152,6 +165,8 @@ Here are a few examples of how we glue cells together in this RealWorld service:
 * A [counter listener](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/tag/listeners/counter.rb) reacts to tags being added to or removed from an article and it updates a total count on the times a tag has been used. All the while, the `article` cell doesn't even know the `tag` cell exists.
 * The `api` cell is a bit special. It exposes some of the behavior of all cells in a RESTful HTTP API. As such, it needs to deal with authentication and authorization, hiding private data and aggregating several operations into [a more useful endpoint](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/api/commands/api_register.rb), making several sub-calls to other cells in the process. We've recently found out someone named this pattern [API Composition](https://microservices.io/patterns/data/api-composition.html).
 
+![domain, application and framework layers in a cell](/media/cell_layers.png)
+
 ## Hence, _Colmena_
 
 We felt it was better to start explaining this architecture from the bottom up, so we haven't had the time to explain properly what the heck a _Colmena_ is.
@@ -160,7 +175,7 @@ _Colmena_ means Beehive in Spanish. Like our architecture, :bee:-hives are compo
 
 Hence, the name.
 
-![a beehive](/readme_assets/beehive.jpg)
+![a beehive](/media/beehive.jpg)
 
 
 ## Other interesting thoughts
@@ -194,7 +209,7 @@ Of course not. __Cells are only an architectural split__. You may split your rep
 You can create some new repositories, add some git submodules and start handpicking and packaging the cells you want toghether.
 
 
-======
+------
 
 We want this to be an open conversation about architectural ideas and experiences.
 
