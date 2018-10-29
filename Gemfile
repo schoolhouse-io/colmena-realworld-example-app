@@ -12,6 +12,7 @@ gem 'jwt', '~> 1.5'
 # Domain
 #
 gem 'dry-validation', '~> 0.12.1'
+gem 'stringex', '~> 2.8'
 
 #
 # Storage

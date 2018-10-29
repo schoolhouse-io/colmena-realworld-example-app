@@ -13,6 +13,7 @@ module RealWorld
           read_user = port(:router).query(:read_user_by_username).call(
             username: username,
           )
+
           capture_errors(read_user) do
             user = read_user.fetch(:data)
 

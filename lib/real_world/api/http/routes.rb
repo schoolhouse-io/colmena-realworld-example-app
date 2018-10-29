@@ -15,6 +15,9 @@ module RealWorld
         post   '/profiles/:username/follow', to: Endpoints::Profiles::Follow
         delete '/profiles/:username/follow', to: Endpoints::Profiles::Unfollow
 
+        require 'real_world/api/http/endpoints/articles'
+        post '/articles', to: Endpoints::Articles::Create
+
         require 'real_world/api/http/endpoints/tags'
         get '/tags', to: Endpoints::Tags::List
       end

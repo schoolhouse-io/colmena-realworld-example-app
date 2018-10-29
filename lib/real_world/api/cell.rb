@@ -35,6 +35,10 @@ module RealWorld
       require 'real_world/api/commands/api_unfollow_profile'
       register_command Commands::ApiUnfollowProfile
 
+      # ARTICLES
+      require 'real_world/api/commands/api_create_article'
+      register_command Commands::ApiCreateArticle
+
       # TAGS
       require 'real_world/api/queries/api_list_tags'
       register_query Queries::ApiListTags

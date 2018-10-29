@@ -50,6 +50,17 @@ follow = RealWorld::Follow::Cell.new(
 
 router.register_cell(follow)
 
+# Article
+require 'real_world/article/cell'
+require 'real_world/article/ports/repository/sql'
+
+article = RealWorld::Article::Cell.new(
+  repository: RealWorld::Article::Ports::Repository::SQL.new(sql_connection),
+  event_publisher: event_broker,
+)
+
+router.register_cell(article)
+
 # Tag
 require 'real_world/tag/cell'
 require 'real_world/tag/ports/repository/sql'
