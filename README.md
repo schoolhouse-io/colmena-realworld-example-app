@@ -15,12 +15,12 @@ For convenience, we provide the following scripts:
 * `bin/dev` opens a console with a fully working development environment.
 * `bin/test` runs all unit tests + the official [RealWorld API Spec](https://github.com/gothinkster/realworld/tree/master/api) test collection.
 
-If you don't want to use docker, you can take a look at the [Dockerfile](/Dockerfile) and [docker-compose.yml](/docker-compose.yml) to find out what runtime dependencies are required.
+If you don't want to use docker, you can take a look at the [Dockerfile](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/Dockerfile) and [docker-compose.yml](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/docker-compose.yml) to find out what runtime dependencies are required.
 
 
 ## What is Colmena?
 
-Colmena is an architectural style that optimizes the long-term maintainability and scalability of web services.
+Colmena is an architectural style that __optimizes the long-term maintainability and scalability of web services__.
 
 It draws inspiration from other architectures, patterns and concepts. We will mention these concepts and provide interesting learning resources along the way.
 
@@ -29,7 +29,7 @@ It draws inspiration from other architectures, patterns and concepts. We will me
 
 Don't worry, we're not here to create any new buzzword and you don't need to learn the name _Colmena_.
 
-This is just a combination of other people's ideas and our own. We want to share these ideas with the community because after applying them for serveral years to our codebase, we have found them extremely valuable and practical.
+This is just a combination of other people's ideas and our own. We want to share these ideas with the community because after applying them for serveral years to our codebases, we have found them extremely valuable and practical.
 
 We want to keep this README short and to-the-point, but we're publishing a series of articles diving into the background and analyzing some of the decisions we made and their impact in our codebase:
 
@@ -54,11 +54,11 @@ You can think of cells as __very small microservices__. In fact, we encourage yo
 * __follow__ (user)
 * __article__
 * __tag__
-* __comment__
-* __favorite__ article
+* __comment__ (article)
+* (mark article as) __favorite__
 * (article) __feed__
 
-We know our app is a blogging platform. In that context, the purpose of each cell is pretty clear. It would only take a glance at the [`lib/real_world` directory](https://github.com/schoolhouse-io/colmena-realworld-example-app/tree/master/lib/real_world) to find out where a certain feature might be defined. From there, a developer can quickly look at the API to learn about the operations it supports and navigate the implementation in a very gradual and natural way.
+If we told you our app is a blogging platform, the purpose of each cell becomes pretty clear. It would only take a glance at the [`lib/real_world` directory](https://github.com/schoolhouse-io/colmena-realworld-example-app/tree/master/lib/real_world) to find out where a certain feature might be defined. From there, a developer can quickly look at the API to learn about the operations it supports and navigate the implementation in a very gradual and natural way.
 
 
 ### An event-based, functional domain
@@ -109,9 +109,7 @@ It is extremely valuable for a project to __make sure the contracts for all thes
 
 Given that this is a distributed architecture with many components and cells working separately, it's fair to wonder... Are changes atomic? How do we keep them consistent?
 
-When commands need to be atomic (they usually do), they are decorated by a transaction. This transaction is responsible for publishing the sequence of events the command generates and running the proper materializers.
-
-These materializers enforce consistency and integrity. . A materializer takes a sequence of events and propagates their changes to the several "read models" the queries use. For instance, a materializer may get the following sequence of events:
+When commands need to be atomic (they usually do), they are decorated by a transaction. This transaction is responsible for publishing the sequence of events the command generates and running the proper materializers. In turn, these __materializers enforce consistency and integrity__. A materializer takes a sequence of events and propagates their changes to the several "read models" the queries use. For instance, a materializer may get the following sequence of events:
 
 ```
 article_published(...)
@@ -126,7 +124,7 @@ And perform the following operations:
 
 ![materialization diagram](/media/materialization_diagram.png)
 
-This materialization process can happen synchronously (if consistency is a requirement), or asynchronously (when [eventual consistency](http://guide.couchdb.org/draft/consistency.html) is enough).
+Some parts of this materialization process must happen synchronously (if consistency is a requirement). Others may happen asynchronously (when [eventual consistency](http://guide.couchdb.org/draft/consistency.html) is enough).
 
 
 ### Rely on interfaces, not concrete implementations
@@ -137,9 +135,9 @@ These operations are the weak links of software development. The network can fai
 
 In _Colmena_, __we define every input/output component as an interface (a port in the hexagonal jargon)__. A particular cell might rely on:
 
-* A repository port, which persists and reads domain data.
-* An event publisher port, which allows events to be made public.
-* A router port, which communicates with other cells.
+* A `repository` port, which persists and reads domain data.
+* An `event publisher` port, which allows events to be made public.
+* A `router` port, which communicates with other cells.
 
 In Ruby, we specify the behavior these interfaces should satisfy with a [shared example](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/follow/ports/repository/spec_shared_examples.rb). All implementations (adapters in the hexagonal jargon) must comply with the spec if they are to be trusted, and provide explicit error handling so that risks can be gracefully handled, logged, and mitigated.
 
@@ -147,8 +145,9 @@ Relying on interfaces is one of the most basic design principles, and it has imm
 
 * We can write a single test for multiple components.
 * We can apply the [dependency inversion principle](https://softwareengineering.stackexchange.com/questions/234747/dependency-inversion-principle-vs-program-to-an-interface-not-an-implementatio) to inject the adapters we need for each environment (e.g. a fast SQLite database for testing and a fully scalable cloud database in production).
+* We can switch to a different technology without changing our cell's code.
 
-> Just remember to fully test all adapters before releasing to production.
+> Just remember to __test every adapter__ before releasing to production, not just the ones you use for your development environment.
 
 
 ### Your application is made up of multiple cells
@@ -158,12 +157,12 @@ Cells have clearly defined boundaries, but they still need to communicate with o
 * Synchronously, invoking a command or query on the other cell. This is a traditional [remote procedure call](https://en.wikipedia.org/wiki/Remote_procedure_call) we perform through a [central service registry](https://microservices.io/patterns/service-registry.html) we call [_the router_](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/ports/router/in_memory.rb).
 * Asynchronously, listening to events produced by the other cell and reacting to them. We do this through an [event broker](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/ports/event_broker/in_memory.rb).
 
-> In this example, both the router and event broker ports are implemented in-memory. The beauty of these interfaces is that they can be implemented by a service like RabbitMQ or Amazon Kinesis and connect cells deployed on different parts of the world, or written in different programming languages!
+> In this example, both the router and event broker ports are implemented in-memory. The beauty of these interfaces is that they can be implemented by a service like RabbitMQ or Amazon Kinesis and connect cells deployed on different parts of the world; or even cells written in different programming languages!
 
 Here are a few examples of how we glue cells together in this RealWorld service:
 
 * A [counter listener](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/tag/listeners/counter.rb) reacts to tags being added to or removed from an article and it updates a total count on the times a tag has been used. All the while, the `article` cell doesn't even know the `tag` cell exists.
-* The `api` cell is a bit special. It exposes some of the behavior of all cells in a RESTful HTTP API. As such, it needs to deal with authentication and authorization, hiding private data and aggregating several operations into [a more useful endpoint](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/api/commands/api_register.rb), making several sub-calls to other cells in the process. We've recently found out someone named this pattern [API Composition](https://microservices.io/patterns/data/api-composition.html).
+* The `api` cell is a bit special. It exposes some of the behavior of all cells in a RESTful HTTP API. As such, it needs to deal with authentication and authorization, hiding private data and aggregating several operations into [a more useful endpoint](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/api/commands/api_register.rb), making several sub-calls to other cells in the process. We've recently found out this pattern [has its own name](https://microservices.io/patterns/data/api-composition.html).
 
 ![domain, application and framework layers in a cell](/media/cell_layers.png)
 
@@ -182,10 +181,10 @@ Hence, the name.
 
 ### Testing
 
-* [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) really shines when you need to think so much about public contracts and abstract interfaces.
+* [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) really shines when you need to design public contracts and abstract interfaces.
 * Since we encapsulate all our input/output operation within certain interfaces, we don't need a single stub, mock or test double in our tests, making them very easy to read and maintain.
 * [This `subject.clear` method call](https://github.com/schoolhouse-io/colmena-realworld-example-app/blob/master/lib/real_world/auth/ports/repository/spec_shared_examples.rb#L6) is the most awkward piece of test code you'll find in our codebase. We need it to wipe a database clean before each test. Compared to our experience testing class instances, ORM models and the like, we're proud owners of that piece of code.
-* We like to keep our test files close to our source code files, contrary to the idiomatic ruby way. We find them easier to find and maintain that way.
+* We like to keep our test files close to our source code files, contrary to the idiomatic Ruby way. We find them easier to find and maintain that way.
 * Most tests are highly parallelizable. Build times should decrease linearly with the number of resources you throw in. End-to-end tests are a different story, but hey, hopefully [they'll be small enough](https://martinfowler.com/articles/practical-test-pyramid.html).
 
 
@@ -193,26 +192,25 @@ Hence, the name.
 
 If each cell is a microservice, why putting them in the same repository?
 
-An interesting advantage to this architectural style is that you can split your repositories according to your team's needs. Do you need to speed up build times? Has your company changed the team structure? Are some cells strictly confidential and reserved for approved eyes only? You got it.
+An interesting advantage of this architectural style is that you can split your repositories according to your team's needs. Do you need to speed up build times? Has your company changed the team structure? Are some cells strictly confidential and reserved for approved eyes only? You got it.
 
 
 ### Packaging and Deployment
 
 If each cell is a microservice, are you saying we should deploy 100 different services?
 
-Of course not. __Cells are only an architectural split__. You may split your repositories according to your development team's preferences, and you may split your deployments according to your systems team's preferences.
+Of course not. __Cells define architectural boundaries__. You may split your code repositories according to your dev team's preferences, and you may split your deployments according to your ops team's preferences.
 
 * Maybe you thought your `payments` and `product_recommendations` cells were quite unrelated. Guess what? It turns out they scale at about the same pace on black fridays and sales season.
-* These other cells need to be on premises and heavily audited because of legal regulations.
-* These cells are optional support and we don't need to pay for the extra availability.
+* Some cells need to be on premises and heavily audited because of legal regulations.
+* Other cells don't need to have 9.9999% availability and we can save some dollars deploying them to a cheaper infrastructure.
 
-You can create some new repositories, add some git submodules and start handpicking and packaging the cells you want toghether.
+You can add all your cells to a packaging repository via [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), bundle the cells you want together and improve your deployments.
 
 
 ------
 
-We want this to be an open conversation about architectural ideas and experiences.
+You are welcome to comment on any or the blog posts, or open issues in this repository sharing your views, questions or suggestions.
 
-You are welcome to comment on any or the articles or open issues in this repository sharing your views, questions or suggestions.
-
+We want this to be an open conversation about architectural ideas and experiences!
 
