@@ -27,7 +27,7 @@ module RealWorld
               begin
                 [path.reduce(cache[:json]) { |a, e| a.fetch(e) }, nil]
               rescue ::KeyError => e
-                [nil, required ? Colmena::Error.new(:param_not_found, name: e.key) : nil]
+                [nil, required ? Colmena::Error.call(:param_not_found, name: e.key) : nil]
               end
             end
           end

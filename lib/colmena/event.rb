@@ -2,7 +2,7 @@
 
 module Colmena
   module Event
-    def self.new(name, data = {})
+    def self.call(name, data = {})
       {
         type: name,
         time: Time.now.to_f,
@@ -11,7 +11,7 @@ module Colmena
     end
 
     def event(*args, **kwargs)
-      Event.new(*args, **kwargs)
+      Event.call(*args, **kwargs)
     end
   end
 end

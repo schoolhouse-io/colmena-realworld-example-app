@@ -14,7 +14,7 @@ module RealWorld
               if params&.key?(name)
                 [params[name], nil]
               else
-                [nil, Colmena::Error.new(:param_not_found, name: name)]
+                [nil, Colmena::Error.call(:param_not_found, name: name)]
               end
             end
           end
