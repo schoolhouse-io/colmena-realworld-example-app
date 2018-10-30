@@ -74,6 +74,8 @@ Metrics/BlockLength:
     - 'lib/**/spec_*.rb'
     - 'test/**/*'
 
+  Max: 30
+
 
 #
 # Disables

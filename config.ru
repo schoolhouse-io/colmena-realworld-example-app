@@ -61,6 +61,17 @@ article = RealWorld::Article::Cell.new(
 
 router.register_cell(article)
 
+# Favorite
+require 'real_world/favorite/cell'
+require 'real_world/favorite/ports/repository/sql'
+
+favorite = RealWorld::Favorite::Cell.new(
+  repository: RealWorld::Favorite::Ports::Repository::SQL.new(sql_connection),
+  event_publisher: event_broker,
+)
+
+router.register_cell(favorite)
+
 # Tag
 require 'real_world/tag/cell'
 require 'real_world/tag/ports/repository/sql'

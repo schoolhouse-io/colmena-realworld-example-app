@@ -2,6 +2,7 @@
 
 require 'sequel'
 require 'json'
+require 'real_world/sequel'
 
 module RealWorld
   module Article
@@ -22,18 +23,23 @@ module RealWorld
             article = @articles[id: id]
             return unless article
 
-            deserialize(article)
+            DESERIALIZE.call(article)
           end
 
           def read_by_slug(slug)
             article = @articles[slug: slug]
             return unless article
 
-            deserialize(article)
+            DESERIALIZE.call(article)
+          end
+
+          def list(limit: nil, offset: nil)
+            articles, pagination = Sequel.with_pagination_info(@articles, limit || 100, offset || 0)
+            [articles.map(&DESERIALIZE), pagination]
           end
 
           def create(article)
-            @articles.insert(serialize(article))
+            @articles.insert(SERIALIZE.call(article))
           end
 
           def clear
@@ -61,11 +67,11 @@ module RealWorld
             db[:articles]
           end
 
-          def serialize(article)
+          SERIALIZE = ->(article) do
             article.merge(tags: article.fetch(:tags).to_json)
           end
 
-          def deserialize(article)
+          DESERIALIZE = ->(article) do
             article.merge(tags: JSON.parse(article.fetch(:tags)))
           end
         end

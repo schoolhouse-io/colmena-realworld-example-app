@@ -21,15 +21,10 @@ module RealWorld
           capture_errors(create_article) do
             article = create_article.fetch(:data)
 
-            author = port(:router).query(:read_user_by_id).call(
-              id: article.fetch(:author_id),
-            ).fetch(:data)
-
-            response(article: article.merge(
-              author: author,
-              favorited: false,
-              favorites_count: 0,
-            ))
+            response(port(:router).query(:api_get_article).call(
+              auth_token: auth_token,
+              slug: article.fetch(:slug),
+            ).fetch(:data))
           end
         end
       end

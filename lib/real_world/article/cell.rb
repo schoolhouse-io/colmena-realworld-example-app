@@ -20,6 +20,9 @@ module RealWorld
       require 'real_world/article/queries/read_article_by_slug'
       register_query Queries::ReadArticleBySlug
 
+      require 'real_world/article/queries/list_articles'
+      register_query Queries::ListArticles
+
       require 'real_world/article/commands/create_article'
       register_command TRANSACTION[Commands::CreateArticle]
     end
