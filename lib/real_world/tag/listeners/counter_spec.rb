@@ -15,7 +15,7 @@ describe RealWorld::Tag::Listeners::Counter do
   context 'when it receives a :tag_added event' do
     it 'increases the counter for that tag' do
       expect(repository).to receive(:increase).and_call_original
-      listener.call(Colmena::Event.call(:tag_added, name: some_tag))
+      listener.call(Colmena::Event.call(:article_tag_added, tag: some_tag))
       expect(repository.read(some_tag)).to include(count: 4)
     end
   end
@@ -23,7 +23,7 @@ describe RealWorld::Tag::Listeners::Counter do
   context 'when it receives a :tag_removed event' do
     it 'decreases the counter for that tag' do
       expect(repository).to receive(:decrease).and_call_original
-      listener.call(Colmena::Event.call(:tag_removed, name: some_tag))
+      listener.call(Colmena::Event.call(:article_tag_deleted, tag: some_tag))
       expect(repository.read(some_tag)).to include(count: 2)
     end
   end
