@@ -31,7 +31,7 @@ describe RealWorld::Article::Commands::CreateArticle do
           tags: tags,
           author_id: author_id,
         ),
-        events: [:article_created] + tags.map { |_| :article_tag_added },
+        events: [:article_created] + tags.map { :article_tag_added },
       ),
     )
   }
