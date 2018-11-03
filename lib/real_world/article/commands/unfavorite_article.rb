@@ -9,7 +9,7 @@ module RealWorld
       class UnfavoriteArticle < Colmena::Command
         def call(id:, user_id:)
           article = port(:repository).read_by_id(id)
-          return error_response(:article_not_found, id: id) unless article
+          return error_response(:article_does_not_exist, id: id) unless article
 
           favorites = port(:repository).favorited?(article_ids: [id], user_id: user_id)
           return error_response(:article_not_favorited) unless favorites[id]

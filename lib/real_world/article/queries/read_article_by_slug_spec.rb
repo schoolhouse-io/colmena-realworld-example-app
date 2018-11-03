@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require 'real_world/user/spec_factory_shared_context'
-require 'real_world/user/ports/spec_shared_context'
-require 'real_world/user/queries/read_user_by_email'
+require 'real_world/article/spec_factory_shared_context'
+require 'real_world/article/ports/spec_shared_context'
+require 'real_world/article/queries/read_article_by_slug'
 
-describe RealWorld::User::Queries::ReadUserByEmail do
-  include_context 'user ports'
-  include_context 'user factory'
+describe RealWorld::Article::Queries::ReadArticleBySlug do
+  include_context 'article ports'
+  include_context 'article factory'
 
   let(:query) { described_class.new(ports) }
-  subject { query.call(email: email) }
+  subject { query.call(slug: slug) }
 
-  context 'when the user does not exist' do
-    it { is_expected.to fail_with_errors(:user_does_not_exist) }
+  context 'when the article does not exist' do
+    it { is_expected.to fail_with_errors(:article_does_not_exist) }
   end
 
-  context 'when the user exists' do
-    before { repository.create(some_user) }
-    it { is_expected.to succeed(data: include(some_user)) }
+  context 'when the article exists' do
+    before { repository.create(some_article) }
+    it { is_expected.to succeed(data: include(some_article)) }
   end
 end

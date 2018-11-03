@@ -9,7 +9,7 @@ module RealWorld
       class UpdateArticle < Colmena::Command
         def call(id:, title: nil, description: nil, body: nil, tags: nil)
           article = port(:repository).read_by_id(id)
-          return error_response(:article_not_found, id: id) unless article
+          return error_response(:article_does_not_exist, id: id) unless article
 
           perform_update = -> do
             Domain.update(
