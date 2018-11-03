@@ -38,8 +38,9 @@ module RealWorld
           def list(author_id: nil, tag: nil, favorited_by: nil, limit: nil, offset: nil)
             articles = @articles
             articles = articles.where(author_id: author_id) if author_id
-            articles = articles if tag
+            articles = with_tag(articles, tag) if tag
             articles = articles.where(id: @favorites.where(user_id: favorited_by).select(:article_id)) if favorited_by
+            articles = articles.order(::Sequel.desc(:created_at))
 
             articles, pagination = Sequel.with_pagination_info(articles, limit || 100, offset || 0)
             [articles.map(&DESERIALIZE), pagination]
@@ -80,13 +81,23 @@ module RealWorld
 
           private
 
+          def with_tag(articles, tag)
+            # See json_each() docs here: https://www.sqlite.org/json1.html#jex
+            articles_with_tag = @db.fetch('SELECT DISTINCT articles.id '\
+                                          'FROM articles, json_each(articles.tags) '\
+                                          'WHERE json_each.value = ?',
+                                          tag)
+
+            articles.where(id: articles_with_tag)
+          end
+
           def create_articles_collection?(db)
             db.create_table?(:articles) do
               uuid :id, primary_key: true
 
               String :title, size: 100, null: false
               String :slug, size: 60, null: false, unique: true
-              String :description, size: 200, null: false, unique: true
+              String :description, size: 200, null: false
               String :body, null: false
               jsonb :tags, null: false
               uuid :author_id, null: false
