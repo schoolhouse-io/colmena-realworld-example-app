@@ -26,7 +26,9 @@ module RealWorld
           capture_errors(update_article) do
             unless article.fetch(:slug) == update_article.fetch(:data).fetch(:slug)
               # Deal with slug collisions
-              while port(:repository).read_by_slug(update_article.dig(:data, :slug))
+              5.times do
+                break unless port(:repository).read_by_slug(update_article.dig(:data, :slug))
+
                 update_article = perform_update.call
               end
             end

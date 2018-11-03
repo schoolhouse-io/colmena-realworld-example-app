@@ -8,24 +8,24 @@ module RealWorld
     module Commands
       class CreateArticle < Colmena::Command
         def call(title:, description:, body:, tags:, author_id:)
-          create_article = Domain.create(
-            title,
-            description,
-            body,
-            tags,
-            author_id,
-          )
+          perform_creation = -> do
+            Domain.create(
+              title,
+              description,
+              body,
+              tags,
+              author_id,
+            )
+          end
+
+          create_article = perform_creation.call
 
           capture_errors(create_article) do
             # Deal with slug collisions
-            while port(:repository).read_by_slug(create_article.dig(:data, :slug))
-              create_article = Domain.create(
-                title,
-                description,
-                body,
-                tags,
-                author_id,
-              )
+            5.times do
+              break unless port(:repository).read_by_slug(create_article.dig(:data, :slug))
+
+              create_article = perform_creation.call
             end
 
             create_article
