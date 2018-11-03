@@ -764,7 +764,7 @@
 								"exec": [
 									"var is200Response = responseCode.code === 200;",
 									"",
-									"tests['Response code is 200 OK' + responseBody] = is200Response;",
+									"tests['Response code is 200 OK'] = is200Response;",
 									"",
 									"if(is200Response){",
 									"    var responseJSON = JSON.parse(responseBody);",
@@ -1889,7 +1889,7 @@
 									"if (!(environment.isIntegrationTest)) {",
 									"var is200Response = responseCode.code === 200;",
 									"",
-									"tests['Response code is 200 OK' + responseBody] = is200Response;",
+									"tests['Response code is 200 OK'] = is200Response;",
 									"",
 									"if(is200Response){",
 									"    var responseJSON = JSON.parse(responseBody);",
