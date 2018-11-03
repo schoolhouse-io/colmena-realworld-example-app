@@ -100,7 +100,7 @@ module RealWorld
               String :description, size: 200, null: false
               String :body, null: false
               jsonb :tags, null: false
-              uuid :author_id, null: false
+              uuid :author_id, null: false, index: true
               Integer :favorites_count, null: false
               Float :created_at, null: false
               Float :updated_at, null: false
