@@ -5,6 +5,7 @@ require 'real_world/api/http/mappers'
 require 'real_world/api/http/mappers/json'
 require 'real_world/api/http/mappers/auth_token'
 require 'real_world/api/http/mappers/route'
+require 'real_world/api/http/mappers/query_param'
 require 'real_world/api/http/response'
 
 module RealWorld
@@ -56,7 +57,14 @@ module RealWorld
             include Endpoint
             query :api_list_articles
 
-            custom_mapper Mappers.combine({})
+            custom_mapper Mappers.combine(
+              auth_token: Mappers::AuthToken.header(optional: true),
+              author: Mappers::QueryParam.optional(:author),
+              tag: Mappers::QueryParam.optional(:tag),
+              favorited: Mappers::QueryParam.optional(:favorited),
+              limit: Mappers::QueryParam.optional(:limit, type: Integer),
+              offset: Mappers::QueryParam.optional(:offset, type: Integer),
+            )
 
             custom_handler RETURN_MANY
           end

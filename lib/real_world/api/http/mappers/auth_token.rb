@@ -9,7 +9,7 @@ module RealWorld
         module AuthToken
           def self.header(optional: false)
             ->(request, _cache) do
-              type, token = request.env['HTTP_AUTHORIZATION'].split
+              type, token = (request.env['HTTP_AUTHORIZATION'] || '').split
 
               if type == 'Token'
                 [token, nil]

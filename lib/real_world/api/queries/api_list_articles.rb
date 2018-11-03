@@ -20,12 +20,12 @@ module RealWorld
 
           users = port(:router).query(:index_users_by_username).call(
             usernames: usernames,
-          )
+          ).fetch(:data)
 
           list_articles = port(:router).query(:list_articles).call(
-            author_id: author && users.fetch(author),
+            author_id: author && users[author]&.fetch(:id),
             tag: tag,
-            favorited_by: favorited && users.fetch(favorited),
+            favorited_by: favorited && users[favorited]&.fetch(:id),
             limit: limit,
             offset: offset,
           )
