@@ -23,11 +23,12 @@ describe RealWorld::Article::Queries::ListArticles do
     query.call(parameters)
   end
 
-  before do
-    expect(repository).to receive(:list)
-      .with(parameters)
-      .and_return([:result, :pagination])
+  it 'returns the list from the repository and the pagination info' do
+    expect(subject).to(
+      include(
+        data: be_an(Array),
+        pagination: include(:limit, :offset, :total_elements),
+      ),
+    )
   end
-
-  it { is_expected.to include(data: eq(:result), pagination: eq(:pagination)) }
 end
