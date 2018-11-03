@@ -24,7 +24,7 @@ module RealWorld
             ]
           end
 
-          response(Hash[index])
+          response(::Hash[index])
         end
       end
     end

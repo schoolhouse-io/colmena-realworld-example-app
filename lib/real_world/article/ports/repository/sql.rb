@@ -3,6 +3,7 @@
 require 'sequel'
 require 'json'
 require 'real_world/sequel'
+require 'real_world/support/hash'
 
 module RealWorld
   module Article
@@ -12,6 +13,7 @@ module RealWorld
           def initialize(db, unsafe: false)
             @db = db
             @articles = create_articles_collection?(db)
+            @favorites = create_favorites_collection?(db)
             @unsafe = unsafe
           end
 
@@ -33,8 +35,13 @@ module RealWorld
             DESERIALIZE.call(article)
           end
 
-          def list(limit: nil, offset: nil)
-            articles, pagination = Sequel.with_pagination_info(@articles, limit || 100, offset || 0)
+          def list(author_id: nil, tag: nil, favorited_by: nil, limit: nil, offset: nil)
+            articles = @articles
+            articles = articles.where(author_id: author_id) if author_id
+            articles = articles if tag
+            articles = articles.where(id: @favorites.where(user_id: favorited_by).select(:article_id)) if favorited_by
+
+            articles, pagination = Sequel.with_pagination_info(articles, limit || 100, offset || 0)
             [articles.map(&DESERIALIZE), pagination]
           end
 
@@ -42,10 +49,33 @@ module RealWorld
             @articles.insert(SERIALIZE.call(article))
           end
 
+          def update(article)
+            @articles.where(id: article.fetch(:id)).update(SERIALIZE.call(article))
+          end
+
+          def favorite(article, user_id)
+            @favorites.insert(article_id: article.fetch(:id), user_id: user_id)
+            update(article)
+          end
+
+          def unfavorite(article, user_id)
+            @favorites.where(article_id: article.fetch(:id), user_id: user_id).delete
+            update(article)
+          end
+
+          def favorited?(article_ids:, user_id:)
+            favorites = Support::Hash.index_by(@favorites.where(article_id: article_ids, user_id: user_id), :article_id)
+
+            Hash[article_ids.map do |article_id|
+              [article_id, favorites[article_id] && true || false]
+            end]
+          end
+
           def clear
             raise 'Cannot .clear unless unsafe mode is on' unless @unsafe
 
             @articles.delete
+            @favorites.delete
           end
 
           private
@@ -60,11 +90,23 @@ module RealWorld
               String :body, null: false
               jsonb :tags, null: false
               uuid :author_id, null: false
+              Integer :favorites_count, null: false
               Float :created_at, null: false
               Float :updated_at, null: false
             end
 
             db[:articles]
+          end
+
+          def create_favorites_collection?(db)
+            db.create_table?(:article_favorites) do
+              uuid :article_id
+              uuid :user_id
+
+              primary_key [:article_id, :user_id]
+            end
+
+            db[:article_favorites]
           end
 
           SERIALIZE = ->(article) do

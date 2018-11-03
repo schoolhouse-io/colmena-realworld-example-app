@@ -6,7 +6,7 @@ module RealWorld
   module Api
     module Queries
       class ApiListArticles < Colmena::Query
-        def call(auth_token: nil, limit: 100, offset: 0)
+        def call(auth_token: nil, author: nil, tag: nil, favorited: nil, limit: 100, offset: 0)
           auth_user_id = if auth_token
                            token, error = port(:tokens).decode_auth(auth_token)
                            return error_response(:forbidden, reason: error) if error
@@ -14,7 +14,18 @@ module RealWorld
                            token.fetch(:user_id)
                          end
 
+          usernames = []
+          usernames << author if author
+          usernames << favorited if favorited
+
+          users = port(:router).query(:index_users_by_username).call(
+            usernames: usernames,
+          )
+
           list_articles = port(:router).query(:list_articles).call(
+            author_id: author && users.fetch(author),
+            tag: tag,
+            favorited_by: favorited && users.fetch(favorited),
             limit: limit,
             offset: offset,
           )
@@ -30,7 +41,7 @@ module RealWorld
             ).fetch(:data)
 
             is_favorited = if auth_user_id
-                             port(:router).query(:is_favorited).call(
+                             port(:router).query(:are_articles_favorited).call(
                                article_ids: article_ids,
                                user_id: auth_user_id,
                              ).fetch(:data)
@@ -38,15 +49,10 @@ module RealWorld
                              {}
                            end
 
-            favorites_count = port(:router).query(:count_favorites).call(
-              article_ids: article_ids,
-            ).fetch(:data)
-
             articles = articles.map do |article|
               article.merge(
                 author: profiles.fetch(article.fetch(:author_id)),
                 favorited: is_favorited[article.fetch(:id)] || false,
-                favorites_count: favorites_count.fetch(article.fetch(:id)),
               )
             end
 

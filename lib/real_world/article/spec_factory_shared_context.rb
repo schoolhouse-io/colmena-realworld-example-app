@@ -9,6 +9,7 @@ RSpec.shared_context 'article factory' do
   let(:description) { 'Some description' }
   let(:body) { 'This is the body' }
   let(:tags) { ['tag1', 'tag2', 'tag3'] }
+  let(:favorites_count) { 0 }
   let(:author_id) { SecureRandom.uuid }
 
   let(:some_article) do
@@ -20,6 +21,7 @@ RSpec.shared_context 'article factory' do
       body: body,
       tags: tags,
       author_id: author_id,
+      favorites_count: favorites_count,
       created_at: Time.now.to_f,
       updated_at: Time.now.to_f,
     }

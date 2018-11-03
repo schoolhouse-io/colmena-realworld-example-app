@@ -26,6 +26,9 @@ module RealWorld
       require 'real_world/user/queries/read_user_by_username'
       register_query Queries::ReadUserByUsername
 
+      require 'real_world/user/queries/index_users_by_username'
+      register_query Queries::IndexUsersByUsername
+
       require 'real_world/user/commands/create_user'
       register_command TRANSACTION[Commands::CreateUser]
 

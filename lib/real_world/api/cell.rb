@@ -48,6 +48,12 @@ module RealWorld
       require 'real_world/api/commands/api_create_article'
       register_command Commands::ApiCreateArticle
 
+      require 'real_world/api/commands/api_favorite_article'
+      register_command Commands::ApiFavoriteArticle
+
+      require 'real_world/api/commands/api_unfavorite_article'
+      register_command Commands::ApiUnfavoriteArticle
+
       # TAGS
       require 'real_world/api/queries/api_list_tags'
       register_query Queries::ApiListTags

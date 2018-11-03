@@ -31,7 +31,7 @@ module RealWorld
             }
           end
 
-          ONE = ->(result, _env) do
+          RETURN_ONE = ->(result, _env) do
             data = result.fetch(:data)
 
             Response.call(
@@ -40,7 +40,7 @@ module RealWorld
             )
           end
 
-          MANY = ->(result, _env) do
+          RETURN_MANY = ->(result, _env) do
             data = result.fetch(:data)
 
             Response.call(
@@ -58,7 +58,7 @@ module RealWorld
 
             custom_mapper Mappers.combine({})
 
-            custom_handler MANY
+            custom_handler RETURN_MANY
           end
 
           class Create
@@ -73,7 +73,7 @@ module RealWorld
               tags: Mappers::Json.required(:article, :tagList),
             )
 
-            custom_handler ONE
+            custom_handler RETURN_ONE
           end
 
           class Get
@@ -85,17 +85,31 @@ module RealWorld
               slug: Mappers::Route.segment(:slug),
             )
 
-            custom_handler ONE
+            custom_handler RETURN_ONE
           end
 
           class Favorite
             include Endpoint
             command :api_favorite_article
+
+            custom_mapper Mappers.combine(
+              auth_token: Mappers::AuthToken.header,
+              slug: Mappers::Route.segment(:slug),
+            )
+
+            custom_handler RETURN_ONE
           end
 
           class Unfavorite
             include Endpoint
             command :api_unfavorite_article
+
+            custom_mapper Mappers.combine(
+              auth_token: Mappers::AuthToken.header,
+              slug: Mappers::Route.segment(:slug),
+            )
+
+            custom_handler RETURN_ONE
           end
         end
       end

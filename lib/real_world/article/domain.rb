@@ -17,6 +17,16 @@ module RealWorld
                         article.merge(tags: article.fetch(:tags) + [event.dig(:data, :tag)])
                       end
 
+      events :article_favorited,
+             handler: ->(article, _event) do
+                        article.merge(favorites_count: article.fetch(:favorites_count) + 1)
+                      end
+
+      events :article_unfavorited,
+             handler: ->(article, _event) do
+                        article.merge(favorites_count: article.fetch(:favorites_count) - 1)
+                      end
+
       def self.create(title, description, body, tags, author_id)
         capture_errors(
           Validation.title(title),
@@ -33,6 +43,7 @@ module RealWorld
             body: body,
             tags: [],
             author_id: author_id,
+            favorites_count: 0,
             created_at: Time.now.to_f,
             updated_at: Time.now.to_f,
           }
@@ -44,6 +55,24 @@ module RealWorld
           events = [event(:article_created, article)] + tag_events
 
           response(apply({}, events), events: events)
+        end
+      end
+
+      def self.favorite(article, user_id)
+        capture_errors(
+          Validation.user_id(user_id),
+        ) do
+          events = [event(:article_favorited, id: article.fetch(:id), user_id: user_id)]
+          response(apply(article, events), events: events)
+        end
+      end
+
+      def self.unfavorite(article, user_id)
+        capture_errors(
+          Validation.user_id(user_id),
+        ) do
+          events = [event(:article_unfavorited, id: article.fetch(:id), user_id: user_id)]
+          response(apply(article, events), events: events)
         end
       end
 

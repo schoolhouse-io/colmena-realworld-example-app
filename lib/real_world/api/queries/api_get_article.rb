@@ -24,17 +24,13 @@ module RealWorld
           ).fetch(:data)
 
           is_favorited = if auth_user_id
-                           port(:router).query(:is_favorited).call(
+                           port(:router).query(:are_articles_favorited).call(
                              article_ids: [article.fetch(:id)],
                              user_id: auth_user_id,
                            ).fetch(:data).fetch(article.fetch(:id))
                          else
                            false
                          end
-
-          favorites_count = port(:router).query(:count_favorites).call(
-            article_ids: [article.fetch(:id)],
-          ).fetch(:data).fetch(article.fetch(:id))
 
           response(
             article: article.merge(
@@ -43,7 +39,6 @@ module RealWorld
                 username: author.fetch(:username),
               ).fetch(:data),
               favorited: is_favorited,
-              favorites_count: favorites_count,
             ),
           )
         end

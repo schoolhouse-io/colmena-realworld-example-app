@@ -17,6 +17,7 @@ module RealWorld
           required(:body) { filled? & str? }
           required(:tags) { array? & size?(1..15) & each(:str?) }
           required(:author_id) { filled? & str? & format?(UUID::VALIDATION_REGEX) }
+          required(:user_id) { filled? & str? & format?(UUID::VALIDATION_REGEX) }
         }
 
         def self.title(title)
@@ -37,6 +38,10 @@ module RealWorld
 
         def self.author_id(author_id)
           field_errors(VALIDATOR, :author_id, author_id, :author_id_is_invalid)
+        end
+
+        def self.user_id(user_id)
+          field_errors(VALIDATOR, :user_id, user_id, :user_id_is_invalid)
         end
       end
     end

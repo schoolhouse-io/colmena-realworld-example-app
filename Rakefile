@@ -8,4 +8,4 @@ Dir['rake/*.rb'].each { |filename| load filename }
 
 task :test => %w(rspec)
 
-task :default => %w(bundle:audit rubocop test)
+task :default => %w(bundle:audit rubocop:auto_correct test)

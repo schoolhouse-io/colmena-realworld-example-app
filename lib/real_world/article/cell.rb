@@ -23,8 +23,17 @@ module RealWorld
       require 'real_world/article/queries/list_articles'
       register_query Queries::ListArticles
 
+      require 'real_world/article/queries/are_articles_favorited'
+      register_query Queries::AreArticlesFavorited
+
       require 'real_world/article/commands/create_article'
       register_command TRANSACTION[Commands::CreateArticle]
+
+      require 'real_world/article/commands/favorite_article'
+      register_command TRANSACTION[Commands::FavoriteArticle]
+
+      require 'real_world/article/commands/unfavorite_article'
+      register_command TRANSACTION[Commands::UnfavoriteArticle]
     end
   end
 end
