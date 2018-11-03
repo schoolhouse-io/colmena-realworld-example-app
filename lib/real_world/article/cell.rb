@@ -29,6 +29,9 @@ module RealWorld
       require 'real_world/article/commands/create_article'
       register_command TRANSACTION[Commands::CreateArticle]
 
+      require 'real_world/article/commands/update_article'
+      register_command TRANSACTION[Commands::UpdateArticle]
+
       require 'real_world/article/commands/favorite_article'
       register_command TRANSACTION[Commands::FavoriteArticle]
 

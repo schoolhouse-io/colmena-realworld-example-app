@@ -76,6 +76,22 @@ module RealWorld
             custom_handler RETURN_ONE
           end
 
+          class Update
+            include Endpoint
+            command :api_update_article
+
+            custom_mapper Mappers.combine(
+              auth_token: Mappers::AuthToken.header,
+              slug: Mappers::Route.segment(:slug),
+              title: Mappers::Json.optional(:article, :title),
+              description: Mappers::Json.optional(:article, :description),
+              body: Mappers::Json.optional(:article, :body),
+              tags: Mappers::Json.optional(:article, :tagList),
+            )
+
+            custom_handler RETURN_ONE
+          end
+
           class Get
             include Endpoint
             query :api_get_article

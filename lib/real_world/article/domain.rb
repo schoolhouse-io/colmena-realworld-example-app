@@ -10,11 +10,17 @@ module RealWorld
       extend Colmena::Domain
 
       events :article_created,
+             :article_updated,
              handler: ->(article, event) { article.merge(event.fetch(:data)) }
 
       events :article_tag_added,
              handler: ->(article, event) do
                         article.merge(tags: article.fetch(:tags) + [event.dig(:data, :tag)])
+                      end
+
+      events :article_tag_deleted,
+             handler: ->(article, event) do
+                        article.merge(tags: article.fetch(:tags) - [event.dig(:data, :tag)])
                       end
 
       events :article_favorited,
@@ -55,6 +61,41 @@ module RealWorld
           events = [event(:article_created, article)] + tag_events
 
           response(apply({}, events), events: events)
+        end
+      end
+
+      def self.update(article, title, description, body, tags)
+        capture_errors(
+          Validation.title(title),
+          Validation.description(description),
+          Validation.body(body),
+          Validation.tags(tags),
+        ) do
+          slug = if article.fetch(:title) == title
+                   article.fetch(:slug)
+                 else
+                   generate_slug(title)
+                 end
+
+          update_event = event(:article_updated,
+                               id: article.fetch(:id),
+                               title: title,
+                               slug: slug,
+                               description: description,
+                               body: body,
+                               updated_at: Time.now.to_f)
+
+          added_tags = (tags - article.fetch(:tags)).map do |tag|
+            event(:article_tag_added, id: article.fetch(:id), tag: tag)
+          end
+
+          deleted_tags = (article.fetch(:tags) - tags).map do |tag|
+            event(:article_tag_deleted, id: article.fetch(:id), tag: tag)
+          end
+
+          events = [update_event] + added_tags + deleted_tags
+
+          response(apply(article, events), events: events)
         end
       end
 

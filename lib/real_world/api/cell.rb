@@ -48,6 +48,9 @@ module RealWorld
       require 'real_world/api/commands/api_create_article'
       register_command Commands::ApiCreateArticle
 
+      require 'real_world/api/commands/api_update_article'
+      register_command Commands::ApiUpdateArticle
+
       require 'real_world/api/commands/api_favorite_article'
       register_command Commands::ApiFavoriteArticle
 

@@ -27,7 +27,8 @@ module RealWorld
 
         case event.fetch(:type)
         when :article_created then port(:repository).create(article)
-        when :article_tag_added then port(:repository).update(article)
+        when :article_updated, :article_tag_added, :article_tag_deleted
+          port(:repository).update(article)
         when :article_favorited
           port(:repository).favorite(article, event.fetch(:data).fetch(:user_id))
         when :article_unfavorited
