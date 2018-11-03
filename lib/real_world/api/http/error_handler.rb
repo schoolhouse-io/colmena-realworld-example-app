@@ -19,8 +19,8 @@ module RealWorld
         def self.validation_errors(errors)
           Hash[
             errors
-              .select { |error| error.fetch(:type).to_s.end_with?('is_invalid') }
-              .map do |error|
+            .select { |error| error.fetch(:type).to_s.end_with?('is_invalid') }
+            .map do |error|
               [
                 error.fetch(:type).to_s.chomp('_is_invalid'),
                 error.fetch(:data).join(' and '),
