@@ -55,7 +55,6 @@ You can think of cells as __very small microservices__. In fact, we encourage yo
 * __article__
 * __tag__
 * __comment__ (article)
-* (mark article as) __favorite__
 * (article) __feed__
 
 If we told you our app is a blogging platform, the purpose of each cell becomes pretty clear. It would only take a glance at the [`lib/real_world` directory](https://github.com/schoolhouse-io/colmena-realworld-example-app/tree/master/lib/real_world) to find out where a certain feature might be defined. From there, a developer can quickly look at the API to learn about the operations it supports and navigate the implementation in a very gradual and natural way.
