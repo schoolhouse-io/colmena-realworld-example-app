@@ -9,7 +9,7 @@ module RealWorld
       class ApiFavoriteArticle < Colmena::Command
         def call(auth_token:, slug:)
           token, error = port(:tokens).decode_auth(auth_token)
-          return error_response(:forbidden, reason: error) if error
+          return error_response(:unauthorized, reason: error) if error
 
           read_article = port(:router).query(:read_article_by_slug).call(
             slug: slug,

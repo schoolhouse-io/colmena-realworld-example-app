@@ -8,7 +8,7 @@ module RealWorld
       class ApiDeleteComment < Colmena::Command
         def call(auth_token:, id:)
           token, error = port(:tokens).decode_auth(auth_token)
-          return error_response(:forbidden, reason: error) if error
+          return error_response(:unauthorized, reason: error) if error
 
           read_comment = port(:router).query(:read_comment_by_id).call(
             id: id,

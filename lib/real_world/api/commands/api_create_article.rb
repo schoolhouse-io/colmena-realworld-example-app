@@ -8,7 +8,7 @@ module RealWorld
       class ApiCreateArticle < Colmena::Command
         def call(auth_token:, title:, description:, body:, tags:)
           token, error = port(:tokens).decode_auth(auth_token)
-          return error_response(:forbidden, reason: error) if error
+          return error_response(:unauthorized, reason: error) if error
 
           create_article = port(:router).command(:create_article).call(
             title: title,
