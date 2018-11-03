@@ -12,7 +12,6 @@ module RealWorld
 
           Response.call(
             status_code(errors.first),
-            payload: nil,
             errors: Hash[errors.map { |error| error.values_at(:type, :data) }],
           )
         end
