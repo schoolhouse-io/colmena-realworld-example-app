@@ -94,5 +94,9 @@ RSpec.shared_examples 'a user repository' do
     it '#read_by_username' do
       expect(subject.read_by_username(username)).to include(:id, :email, :username, :bio, :image)
     end
+
+    it '#index_by_usernames' do
+      expect(subject.index_by_usernames([username])).to include(username => include(:id, :email, :username, :image))
+    end
   end
 end

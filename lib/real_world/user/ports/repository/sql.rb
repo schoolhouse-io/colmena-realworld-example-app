@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sequel'
+require 'real_world/support/hash'
 
 module RealWorld
   module User
@@ -27,6 +28,10 @@ module RealWorld
 
           def read_by_username(username)
             @users[username: username]
+          end
+
+          def index_by_usernames(usernames)
+            Support::Hash.index_by(@users.where(username: usernames), :username)
           end
 
           def create(id:, email:, username:, bio:, image:)

@@ -29,11 +29,33 @@ module RealWorld
       require 'real_world/api/queries/api_get_profile'
       register_query Queries::ApiGetProfile
 
+      require 'real_world/api/queries/api_index_profiles'
+      register_query Queries::ApiIndexProfiles
+
       require 'real_world/api/commands/api_follow_profile'
       register_command Commands::ApiFollowProfile
 
       require 'real_world/api/commands/api_unfollow_profile'
       register_command Commands::ApiUnfollowProfile
+
+      # ARTICLES
+      require 'real_world/api/queries/api_list_articles'
+      register_query Queries::ApiListArticles
+
+      require 'real_world/api/queries/api_get_article'
+      register_query Queries::ApiGetArticle
+
+      require 'real_world/api/commands/api_create_article'
+      register_command Commands::ApiCreateArticle
+
+      require 'real_world/api/commands/api_update_article'
+      register_command Commands::ApiUpdateArticle
+
+      require 'real_world/api/commands/api_favorite_article'
+      register_command Commands::ApiFavoriteArticle
+
+      require 'real_world/api/commands/api_unfavorite_article'
+      register_command Commands::ApiUnfavoriteArticle
 
       # TAGS
       require 'real_world/api/queries/api_list_tags'

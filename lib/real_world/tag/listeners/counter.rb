@@ -8,8 +8,8 @@ module RealWorld
       class Counter < Colmena::Listener
         def call(event)
           case event.fetch(:type)
-          when :tag_added then port(:repository).increase(event.fetch(:data).fetch(:name))
-          when :tag_removed then port(:repository).decrease(event.fetch(:data).fetch(:name))
+          when :article_tag_added then port(:repository).increase(event.fetch(:data).fetch(:tag))
+          when :article_tag_deleted then port(:repository).decrease(event.fetch(:data).fetch(:tag))
           end
           # TODO: Log unhandled event
         end
