@@ -23,6 +23,9 @@ module RealWorld
       require 'real_world/article/queries/list_articles'
       register_query Queries::ListArticles
 
+      require 'real_world/article/queries/index_articles_by_id'
+      register_query Queries::IndexArticlesById
+
       require 'real_world/article/queries/are_articles_favorited'
       register_query Queries::AreArticlesFavorited
 

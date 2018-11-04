@@ -42,6 +42,9 @@ module RealWorld
       require 'real_world/api/queries/api_list_articles'
       register_query Queries::ApiListArticles
 
+      require 'real_world/api/queries/api_list_articles_feed'
+      register_query Queries::ApiListArticlesFeed
+
       require 'real_world/api/queries/api_get_article'
       register_query Queries::ApiGetArticle
 

@@ -83,6 +83,18 @@ tag = RealWorld::Tag::Cell.new(
 
 router.register_cell(tag)
 
+# Feed
+require 'real_world/feed/cell'
+require 'real_world/feed/ports/repository/sql'
+
+feed = RealWorld::Feed::Cell.new(
+  repository: RealWorld::Feed::Ports::Repository::SQL.new(sql_connection),
+  router: router,
+  event_subscriber: event_broker,
+)
+
+router.register_cell(feed)
+
 # Api
 require 'real_world/api/cell'
 require 'real_world/api/ports/tokens/jwt'

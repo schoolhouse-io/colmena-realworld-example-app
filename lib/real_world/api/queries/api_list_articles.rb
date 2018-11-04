@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'colmena/query'
+require 'real_world/api/queries/support'
 
 module RealWorld
   module Api
@@ -32,29 +33,12 @@ module RealWorld
 
           capture_errors(list_articles) do
             articles = list_articles.fetch(:data)
-            article_ids = articles.map { |article| article.fetch(:id) }
-            author_ids = articles.map { |article| article.fetch(:author_id) }
-
-            profiles = port(:router).query(:api_index_profiles).call(
+            articles = Support.hydrate_articles(
+              articles,
+              router: port(:router),
               auth_token: auth_token,
-              user_ids: author_ids,
-            ).fetch(:data)
-
-            is_favorited = if auth_user_id
-                             port(:router).query(:are_articles_favorited).call(
-                               article_ids: article_ids,
-                               user_id: auth_user_id,
-                             ).fetch(:data)
-                           else
-                             {}
-                           end
-
-            articles = articles.map do |article|
-              article.merge(
-                author: profiles.fetch(article.fetch(:author_id)),
-                favorited: is_favorited[article.fetch(:id)] || false,
-              )
-            end
+              auth_user_id: auth_user_id,
+            )
 
             response(
               articles: articles,

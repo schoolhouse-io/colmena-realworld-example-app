@@ -21,6 +21,11 @@ RSpec.shared_examples 'a repository for following relationships' do
       resp, = subject.list_followed(by: follower_id)
       expect(resp).to be_empty
     end
+
+    it '#list_followers' do
+      resp, = subject.list_followers(of: followed_id)
+      expect(resp).to be_empty
+    end
   end
 
   context 'when there are a few following relationships stored' do
@@ -46,6 +51,12 @@ RSpec.shared_examples 'a repository for following relationships' do
 
     it '#list_followed' do
       resp, pagination_info = subject.list_followed(by: follower_id, limit: 100, offset: 1)
+      expect(resp.size).to eq(2)
+      expect(pagination_info).to include(limit: 100, offset: 1, total_elements: 3)
+    end
+
+    it '#list_followers' do
+      resp, pagination_info = subject.list_followers(of: followed_id, limit: 100, offset: 1)
       expect(resp.size).to eq(2)
       expect(pagination_info).to include(limit: 100, offset: 1, total_elements: 3)
     end

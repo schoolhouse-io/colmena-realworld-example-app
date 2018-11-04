@@ -69,6 +69,17 @@ module RealWorld
             custom_handler RETURN_MANY
           end
 
+          class Feed
+            include Endpoint
+            query :api_list_articles_feed
+
+            custom_mapper Mappers.combine(
+              auth_token: Mappers::AuthToken.header,
+            )
+
+            custom_handler RETURN_MANY
+          end
+
           class Create
             include Endpoint
             command :api_create_article

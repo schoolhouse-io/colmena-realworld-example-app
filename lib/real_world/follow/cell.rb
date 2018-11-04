@@ -28,6 +28,9 @@ module RealWorld
 
       require 'real_world/follow/queries/list_followed'
       register_query Queries::ListFollowed
+
+      require 'real_world/follow/queries/list_followers'
+      register_query Queries::ListFollowers
     end
   end
 end

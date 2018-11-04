@@ -35,6 +35,12 @@ module RealWorld
             Sequel.with_pagination_info(query, limit || 100, offset || 0)
           end
 
+          def list_followers(of:, limit: nil, offset: nil)
+            query = @follows.where(followed_id: of)
+
+            Sequel.with_pagination_info(query, limit || 100, offset || 0)
+          end
+
           def clear
             raise 'Cannot .clear unless unsafe mode is on' unless @unsafe
 
