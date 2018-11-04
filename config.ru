@@ -61,6 +61,17 @@ article = RealWorld::Article::Cell.new(
 
 router.register_cell(article)
 
+# Comment
+require 'real_world/comment/cell'
+require 'real_world/comment/ports/repository/sql'
+
+comment = RealWorld::Comment::Cell.new(
+  repository: RealWorld::Comment::Ports::Repository::SQL.new(sql_connection),
+  event_publisher: event_broker,
+)
+
+router.register_cell(comment)
+
 # Tag
 require 'real_world/tag/cell'
 require 'real_world/tag/ports/repository/sql'

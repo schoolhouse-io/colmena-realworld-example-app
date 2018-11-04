@@ -23,6 +23,11 @@ module RealWorld
         post   '/articles/:slug/favorite', to: Endpoints::Articles::Favorite
         delete '/articles/:slug/favorite', to: Endpoints::Articles::Unfavorite
 
+        require 'real_world/api/http/endpoints/comments'
+        get    '/articles/:slug/comments', to: Endpoints::Comments::List
+        post   '/articles/:slug/comments', to: Endpoints::Comments::Create
+        delete '/articles/:slug/comments/:id', to: Endpoints::Comments::Create
+
         require 'real_world/api/http/endpoints/tags'
         get '/tags', to: Endpoints::Tags::List
       end

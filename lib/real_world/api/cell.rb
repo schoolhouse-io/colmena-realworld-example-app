@@ -57,6 +57,16 @@ module RealWorld
       require 'real_world/api/commands/api_unfavorite_article'
       register_command Commands::ApiUnfavoriteArticle
 
+      # COMMENTS
+      require 'real_world/api/queries/api_list_comments'
+      register_query Queries::ApiListComments
+
+      require 'real_world/api/commands/api_create_comment'
+      register_command Commands::ApiCreateComment
+
+      require 'real_world/api/commands/api_delete_comment'
+      register_command Commands::ApiDeleteComment
+
       # TAGS
       require 'real_world/api/queries/api_list_tags'
       register_query Queries::ApiListTags

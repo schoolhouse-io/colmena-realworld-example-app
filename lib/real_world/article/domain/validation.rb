@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'uri'
 require 'dry-validation'
 require 'colmena/domain/validation'
 require 'real_world/uuid'
