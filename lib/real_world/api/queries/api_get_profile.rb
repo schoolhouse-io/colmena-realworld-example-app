@@ -9,7 +9,7 @@ module RealWorld
         def call(auth_token:, username:)
           auth_user_id = if auth_token
                            token, error = port(:tokens).decode_auth(auth_token)
-                           return error_response(:forbidden, reason: error) if error
+                           return error_response(:unauthorized, reason: error) if error
 
                            token.fetch(:user_id)
                          end

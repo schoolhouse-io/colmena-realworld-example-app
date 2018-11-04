@@ -20,7 +20,7 @@ module RealWorld
                     nil
                   else
                     Colmena::Error.call(
-                      :forbidden,
+                      :unauthorized,
                       reason: "An Authentication header of type 'Token' was not provided",
                     )
                   end,

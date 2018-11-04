@@ -8,7 +8,7 @@ module RealWorld
       class ApiUpdateCurrentUser < Colmena::Command
         def call(auth_token:, email: nil, username: nil, bio: nil, image: nil)
           token, error = port(:tokens).decode_auth(auth_token)
-          return error_response(:forbidden, reason: error) if error
+          return error_response(:unauthorized, reason: error) if error
 
           updated_user = port(:router).command(:update_user).call(
             id: token.fetch(:user_id),
