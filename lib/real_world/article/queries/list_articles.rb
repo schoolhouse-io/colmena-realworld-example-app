@@ -6,7 +6,7 @@ module RealWorld
   module Article
     module Queries
       class ListArticles < Colmena::Query
-        def call(author_id:, tag:, favorited_by:, limit: 100, offset: 0)
+        def call(author_id: nil, tag: nil, favorited_by: nil, limit: 100, offset: 0)
           articles, pagination_info = port(:repository).list(
             author_id: author_id,
             tag: tag,
