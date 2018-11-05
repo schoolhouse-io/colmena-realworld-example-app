@@ -7,24 +7,34 @@ module RealWorld
     module Queries
       class ApiIndexProfiles < Colmena::Query
         def call(auth_token:, user_ids:)
-          # TODO: Make faster!
-          users = user_ids.map do |user_id|
-            port(:router).query(:read_user_by_id).call(
-              id: user_id,
-            ).fetch(:data)
-          end
+          auth_user_id = if auth_token
+                           token, error = port(:tokens).decode_auth(auth_token)
+                           return error_response(:unauthorized, reason: error) if error
 
-          index = users.map do |user|
-            [
-              user.fetch(:id),
-              port(:router).query(:api_get_profile).call(
-                auth_token: auth_token,
-                username: user.fetch(:username),
-              ).fetch(:data).fetch(:profile),
+                           token.fetch(:user_id)
+                         end
+
+          user_index = port(:router).query(:index_users_by_id).call(
+            ids: user_ids,
+          ).fetch(:data)
+
+          if auth_user_id
+            is_followed_index = port(:router).query(:index_is_followed).call(
+              follower_id: auth_user_id,
+              followed_ids: user_ids,
+            ).fetch(:data)
+
+            user_index = Hash[
+              user_index.map do |user_id, user|
+                [
+                  user_id,
+                  user.merge(following: is_followed_index.fetch(user_id)),
+                ]
+              end
             ]
           end
 
-          response(::Hash[index])
+          response(user_index)
         end
       end
     end

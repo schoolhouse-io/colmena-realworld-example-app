@@ -22,8 +22,12 @@ module RealWorld
         when :user_was_unfollowed
           port(:repository).delete(relationship)
 
+        else
+          port(:logger).warn {
+            "#{self.class.name} is not handling events of type #{event.fetch(:type)}." \
+            'This is most likely a mistake.'
+          }
         end
-        # TODO: Log unhandled event
       end
     end
   end

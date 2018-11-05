@@ -4,16 +4,6 @@ module RealWorld
   module Api
     module Queries
       module Support
-        def self.user_to_profile(user, following:)
-          user.slice(
-            :username,
-            :bio,
-            :image,
-          ).merge(
-            following: following,
-          )
-        end
-
         def self.hydrate_articles(articles, router:, auth_token: nil, auth_user_id: nil)
           article_ids = articles.map { |article| article.fetch(:id) }
           author_ids = articles.map { |article| article.fetch(:author_id) }

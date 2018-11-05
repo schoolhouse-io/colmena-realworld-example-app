@@ -20,7 +20,7 @@ describe RealWorld::Article::Queries::IndexArticlesById do
     query.call(parameters)
   end
 
-  it 'returns the index from the repository and the pagination info' do
+  it 'returns the index from the repository' do
     expect(subject).to(
       include(
         data: be_a(Hash),

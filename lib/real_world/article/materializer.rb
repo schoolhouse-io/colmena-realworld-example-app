@@ -33,8 +33,12 @@ module RealWorld
           port(:repository).favorite(article, event.fetch(:data).fetch(:user_id))
         when :article_unfavorited
           port(:repository).unfavorite(article, event.fetch(:data).fetch(:user_id))
+        else
+          port(:logger).warn {
+            "#{self.class.name} is not handling events of type #{event.fetch(:type)}." \
+            'This is most likely a mistake.'
+          }
         end
-        # TODO: Log unhandled event
       end
     end
   end
