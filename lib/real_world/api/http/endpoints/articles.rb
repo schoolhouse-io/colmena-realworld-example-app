@@ -75,6 +75,8 @@ module RealWorld
 
             custom_mapper Mappers.combine(
               auth_token: Mappers::AuthToken.header,
+              limit: Mappers::QueryParam.optional(:limit, type: Integer),
+              offset: Mappers::QueryParam.optional(:offset, type: Integer),
             )
 
             custom_handler RETURN_MANY
