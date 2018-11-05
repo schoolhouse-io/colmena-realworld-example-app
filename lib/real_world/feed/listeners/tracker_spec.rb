@@ -16,7 +16,16 @@ describe RealWorld::Feed::Listeners::Tracker do
 
   context 'when it receives an :article_created event' do
     it 'creates an entry for each of the followers of the author' do
-      expect(router).to receive(:query).and_return(->(*) { { data: [some_follower] } })
+      expect(router).to(
+        receive(:query).and_return(
+          ->(*) do
+            {
+              data: [some_follower],
+              pagination: { total_elements: 1 },
+            }
+          end,
+        ),
+      )
 
       listener.call(Colmena::Event.call(:article_created,
                                         id: some_article,
