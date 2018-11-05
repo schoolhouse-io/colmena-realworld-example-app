@@ -11,6 +11,7 @@ module RealWorld
 
       register_port :repository
       register_port :event_publisher
+      register_port :logger
 
       TRANSACTION = Colmena::Transactions::Materialize[
         event_materializer: Materializer,
@@ -25,6 +26,9 @@ module RealWorld
 
       require 'real_world/follow/queries/is_followed'
       register_query Queries::IsFollowed
+
+      require 'real_world/follow/queries/index_is_followed'
+      register_query Queries::IndexIsFollowed
 
       require 'real_world/follow/queries/list_followed'
       register_query Queries::ListFollowed
