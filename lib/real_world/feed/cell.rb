@@ -13,8 +13,11 @@ module RealWorld
       require 'real_world/feed/queries/list_articles_feed'
       register_query Queries::ListArticlesFeed
 
-      require 'real_world/feed/listeners/tracker'
-      register_listener Listeners::Tracker, event_stream: :article_events
+      require 'real_world/feed/listeners/article_tracker'
+      register_listener Listeners::ArticleTracker, event_stream: :article_events
+
+      require 'real_world/feed/listeners/follower_tracker'
+      register_listener Listeners::FollowerTracker, event_stream: :user_events
     end
   end
 end
