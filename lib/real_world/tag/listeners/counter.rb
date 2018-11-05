@@ -11,7 +11,6 @@ module RealWorld
           when :article_tag_added then port(:repository).increase(event.fetch(:data).fetch(:tag))
           when :article_tag_deleted then port(:repository).decrease(event.fetch(:data).fetch(:tag))
           end
-          # TODO: Log unhandled event
         end
       end
     end
