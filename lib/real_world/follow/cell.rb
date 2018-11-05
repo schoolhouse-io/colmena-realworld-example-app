@@ -11,7 +11,6 @@ module RealWorld
 
       register_port :repository
       register_port :event_publisher
-      register_port :logger
 
       TRANSACTION = Colmena::Transactions::Materialize[
         event_materializer: Materializer,
