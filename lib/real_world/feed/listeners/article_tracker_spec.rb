@@ -2,10 +2,10 @@
 
 require 'colmena/event'
 require 'real_world/feed/ports/spec_shared_context'
-require 'real_world/feed/listeners/tracker'
+require 'real_world/feed/listeners/article_tracker'
 require 'securerandom'
 
-describe RealWorld::Feed::Listeners::Tracker do
+describe RealWorld::Feed::Listeners::ArticleTracker do
   include_context 'feed ports'
 
   let(:listener) { described_class.new(ports) }
@@ -27,9 +27,14 @@ describe RealWorld::Feed::Listeners::Tracker do
         ),
       )
 
-      listener.call(Colmena::Event.call(:article_created,
-                                        id: some_article,
-                                        author_id: some_user))
+      listener.call(
+        Colmena::Event.call(
+          :article_created,
+          id: some_article,
+          author_id: some_user,
+          created_at: 1.1,
+        ),
+      )
 
       expect(repository.list(user_id: some_follower).first).to eq([some_article])
     end

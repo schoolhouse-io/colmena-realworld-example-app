@@ -16,7 +16,7 @@ module RealWorld
         offset += limit
         all_pages_visited = result.fetch(:pagination).fetch(:total_elements) <= offset
 
-        yield(result.fetch(:data))
+        result.fetch(:data).each { |item| yield(item) }
       end
     end
   end
