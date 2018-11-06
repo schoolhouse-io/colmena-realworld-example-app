@@ -4,6 +4,8 @@
 
 ### [Referential demo](https://react-redux.realworld.io/)
 
+![build status](https://travis-ci.org/schoolhouse-io/colmena-realworld-example-app.svg?branch=master)
+
 
 ## How can I run this service?
 
@@ -34,6 +36,7 @@ This is just a combination of other people's ideas and our own. We want to share
 We want to keep this README short and to-the-point, but we're publishing a series of articles diving into the background and analyzing some of the decisions we made and their impact in our codebase:
 
 1. [5 ways to make your codebase withstand the test of time](https://medium.com/@larribas/5-ways-to-make-your-codebase-withstand-the-test-of-time-9f9192ff1763).
+1. [Colmena, an architecture for high-scalability web services](https://medium.com/@larribas/colmena-an-architecture-for-highly-scalable-web-services-aa3d97898c2a).
 
 
 ## Fair enough. So where do we start?
