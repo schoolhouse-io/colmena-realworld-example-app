@@ -10,6 +10,24 @@ module RealWorld
     module Http
       module Endpoints
         module Profiles
+          MAP = ->(profile) do
+            {
+              username: profile.fetch(:username),
+              bio: profile.fetch(:bio),
+              image: profile.fetch(:image),
+              following: profile.fetch(:following),
+            }
+          end
+
+          RETURN_ONE = ->(result, _env) do
+            data = result.fetch(:data)
+
+            Response.call(
+              200,
+              data.merge(profile: MAP.call(data)),
+            )
+          end
+
           class Get
             include Endpoint
             query :api_get_profile
@@ -18,6 +36,8 @@ module RealWorld
               auth_token: Mappers::AuthToken.header,
               username: Mappers::Route.segment(:username),
             )
+
+            custom_handler RETURN_ONE
           end
 
           class Follow
@@ -28,6 +48,8 @@ module RealWorld
               auth_token: Mappers::AuthToken.header,
               username: Mappers::Route.segment(:username),
             )
+
+            custom_handler RETURN_ONE
           end
 
           class Unfollow
@@ -38,6 +60,8 @@ module RealWorld
               auth_token: Mappers::AuthToken.header,
               username: Mappers::Route.segment(:username),
             )
+
+            custom_handler RETURN_ONE
           end
         end
       end

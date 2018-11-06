@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'set'
 require 'real_world/sequel'
 
 module RealWorld
@@ -29,8 +30,24 @@ module RealWorld
             @follows.where(follower_id: follower_id, followed_id: followed_id).delete
           end
 
+          def index_followed(by:, ids:)
+            relationships = Set.new(
+              @follows
+                .where(follower_id: by, followed_id: ids)
+                .map { |relationship| relationship.fetch(:followed_id) },
+            )
+
+            Hash[ids.map { |id| [id, relationships.member?(id)] }]
+          end
+
           def list_followed(by:, limit: nil, offset: nil)
             query = @follows.where(follower_id: by)
+
+            Sequel.with_pagination_info(query, limit || 100, offset || 0)
+          end
+
+          def list_followers(of:, limit: nil, offset: nil)
+            query = @follows.where(followed_id: of)
 
             Sequel.with_pagination_info(query, limit || 100, offset || 0)
           end

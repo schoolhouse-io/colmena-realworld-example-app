@@ -17,6 +17,11 @@ router = RealWorld::Ports::Router::InMemory.new
 require 'real_world/ports/event_broker/in_memory'
 event_broker = RealWorld::Ports::EventBroker::InMemory.new
 
+
+# Logger
+require 'logger'
+logger = Logger.new(STDERR, level: Logger::INFO)
+
 # Auth
 require 'real_world/auth/cell'
 require 'real_world/auth/ports/repository/sql'
@@ -35,6 +40,7 @@ require 'real_world/user/ports/repository/sql'
 user = RealWorld::User::Cell.new(
   repository: RealWorld::User::Ports::Repository::SQL.new(sql_connection),
   event_publisher: event_broker,
+  logger: logger,
 )
 
 router.register_cell(user)
@@ -46,6 +52,7 @@ require 'real_world/follow/ports/repository/sql'
 follow = RealWorld::Follow::Cell.new(
   repository: RealWorld::Follow::Ports::Repository::SQL.new(sql_connection),
   event_publisher: event_broker,
+  logger: logger,
 )
 
 router.register_cell(follow)
@@ -57,6 +64,7 @@ require 'real_world/article/ports/repository/sql'
 article = RealWorld::Article::Cell.new(
   repository: RealWorld::Article::Ports::Repository::SQL.new(sql_connection),
   event_publisher: event_broker,
+  logger: logger,
 )
 
 router.register_cell(article)
@@ -68,6 +76,7 @@ require 'real_world/comment/ports/repository/sql'
 comment = RealWorld::Comment::Cell.new(
   repository: RealWorld::Comment::Ports::Repository::SQL.new(sql_connection),
   event_publisher: event_broker,
+  logger: logger,
 )
 
 router.register_cell(comment)
@@ -82,6 +91,18 @@ tag = RealWorld::Tag::Cell.new(
 )
 
 router.register_cell(tag)
+
+# Feed
+require 'real_world/feed/cell'
+require 'real_world/feed/ports/repository/sql'
+
+feed = RealWorld::Feed::Cell.new(
+  repository: RealWorld::Feed::Ports::Repository::SQL.new(sql_connection),
+  router: router,
+  event_subscriber: event_broker,
+)
+
+router.register_cell(feed)
 
 # Api
 require 'real_world/api/cell'

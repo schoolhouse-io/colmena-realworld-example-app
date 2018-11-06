@@ -28,8 +28,12 @@ module RealWorld
         case event.fetch(:type)
         when :user_created then port(:repository).create(user)
         when :user_updated then port(:repository).update(user)
+        else
+          port(:logger).warn {
+            "#{self.class.name} is not handling events of type #{event.fetch(:type)}." \
+            'This is most likely a mistake.'
+          }
         end
-        # TODO: Log unhandled event
       end
     end
   end

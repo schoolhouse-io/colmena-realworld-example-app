@@ -46,6 +46,10 @@ module RealWorld
             [articles.map(&DESERIALIZE), pagination]
           end
 
+          def index(ids)
+            Support::Hash.index_by(@articles.where(id: ids).map(&DESERIALIZE), :id)
+          end
+
           def create(article)
             @articles.insert(SERIALIZE.call(article))
           end

@@ -136,6 +136,12 @@ RSpec.shared_examples 'an article repository' do
         end
       end
 
+      it '#index' do
+        expect(subject.index([some_article.fetch(:id)])).to eq(
+          some_article.fetch(:id) => some_article,
+        )
+      end
+
       it '#favorited?' do
         expect(subject.favorited?(
                  article_ids: [some_article.fetch(:id), another_article.fetch(:id)],

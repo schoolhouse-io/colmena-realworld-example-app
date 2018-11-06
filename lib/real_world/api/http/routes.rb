@@ -18,6 +18,7 @@ module RealWorld
         require 'real_world/api/http/endpoints/articles'
         get    '/articles', to: Endpoints::Articles::List
         post   '/articles', to: Endpoints::Articles::Create
+        get    '/articles/feed', to: Endpoints::Articles::Feed
         get    '/articles/:slug', to: Endpoints::Articles::Get
         put    '/articles/:slug', to: Endpoints::Articles::Update
         post   '/articles/:slug/favorite', to: Endpoints::Articles::Favorite

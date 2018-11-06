@@ -14,7 +14,7 @@ module RealWorld
       register_query Queries::ListTags
 
       require 'real_world/tag/listeners/counter'
-      register_listener Listeners::Counter, event_stream: :tag_events
+      register_listener Listeners::Counter, event_stream: :article_events
     end
   end
 end

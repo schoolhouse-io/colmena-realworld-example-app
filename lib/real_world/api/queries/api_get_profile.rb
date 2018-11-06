@@ -30,12 +30,7 @@ module RealWorld
                              false
                            end
 
-            response(
-              profile: Support.user_to_profile(
-                user,
-                following: is_following,
-              ),
-            )
+            response(user.merge(following: is_following))
           end
         end
       end

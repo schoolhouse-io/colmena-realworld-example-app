@@ -10,10 +10,11 @@ module RealWorld
       module Validation
         extend Colmena::Domain::Validation
 
+        MAX_BODY_SIZE = 200_000
         VALIDATOR = Dry::Validation.Schema {
           required(:title) { filled? & str? & min_size?(5) & max_size?(100) }
           required(:description) { filled? & str? & min_size?(10) & max_size?(200) }
-          required(:body) { filled? & str? }
+          required(:body) { filled? & str? & max_size?(MAX_BODY_SIZE) }
           required(:tags) { array? & size?(1..15) & each(:str?) }
           required(:author_id) { filled? & str? & format?(UUID::VALIDATION_REGEX) }
           required(:user_id) { filled? & str? & format?(UUID::VALIDATION_REGEX) }

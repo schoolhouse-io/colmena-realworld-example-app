@@ -34,6 +34,10 @@ module RealWorld
             Support::Hash.index_by(@users.where(username: usernames), :username)
           end
 
+          def index_by_ids(ids)
+            Support::Hash.index_by(@users.where(id: ids), :id)
+          end
+
           def create(id:, email:, username:, bio:, image:)
             @users.insert(id: id, email: email, username: username, bio: bio, image: image)
           end

@@ -76,6 +76,8 @@ Metrics/BlockLength:
 
   Max: 30
 
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 2
 
 #
 # Disables

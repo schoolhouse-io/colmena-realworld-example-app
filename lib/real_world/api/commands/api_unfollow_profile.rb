@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'colmena/command'
-require 'real_world/api/queries/support'
 
 module RealWorld
   module Api
@@ -23,12 +22,7 @@ module RealWorld
               followed_id: user_to_unfollow.fetch(:id),
             )
 
-            response(
-              profile: Queries::Support.user_to_profile(
-                user_to_unfollow,
-                following: false,
-              ),
-            )
+            response(user_to_unfollow.merge(following: false))
           end
         end
       end

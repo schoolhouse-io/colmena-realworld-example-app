@@ -11,6 +11,7 @@ module RealWorld
 
       register_port :repository
       register_port :event_publisher
+      register_port :logger
 
       TRANSACTION = Colmena::Transactions::Materialize[
         event_materializer: Materializer,
@@ -28,6 +29,9 @@ module RealWorld
 
       require 'real_world/user/queries/index_users_by_username'
       register_query Queries::IndexUsersByUsername
+
+      require 'real_world/user/queries/index_users_by_id'
+      register_query Queries::IndexUsersById
 
       require 'real_world/user/commands/create_user'
       register_command TRANSACTION[Commands::CreateUser]
